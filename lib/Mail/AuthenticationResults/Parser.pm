@@ -9,14 +9,21 @@ use Mail::AuthenticationResults::Header::SubEntry;
 use Mail::AuthenticationResults::Header::Comment;
 
 sub new {
-    my ( $class, $auth_headers ) = @_;
+    my ( $class, $auth_header ) = @_;
     my $self = {};
     bless $self, $class;
 
-    $self->{ 'header' } = Mail::AuthenticationResults::Header->new();
-    foreach my $auth_header ( @$auth_headers ) {
+    $auth_header =~ s/\n/ /g;
+
+    my $server_id;
+    ( $server_id, $auth_header ) = split( ';', $auth_header, 2 );
+    $server_id =~ s/^\s+//;
+    $server_id =~ s/\s+$//;
+
+    $self->{ 'header' } = Mail::AuthenticationResults::Header->new()->set_value( $server_id );
+    while ( $auth_header ) {
         my $acting_on = Mail::AuthenticationResults::Header::Entry->new();
-        $self->_parse_auth_header( \$acting_on, $auth_header );
+        $auth_header = $self->_parse_auth_header( \$acting_on, $auth_header );
         $self->{ 'header' }->add_child( $acting_on );
     }
 
@@ -38,6 +45,7 @@ sub _parse_auth_header {
     my $key;
     my $value;
 
+    $header =~ s/^\s+//;
     ( $key, $value, $header ) = $self->_parse_auth_header_entry( $header );
     ${$acting_on}->{ 'key' }   = $key;
     ${$acting_on}->{ 'value' } = $value;
@@ -54,6 +62,11 @@ sub _parse_auth_header {
             ( $comment, $header ) = $self->_parse_auth_header_comment( $header );
             my $entry = Mail::AuthenticationResults::Header::Comment->new()->set_value( $comment );
             ${$comment_on}->add_child( $entry );
+        }
+        elsif ( $header =~ /^;/ ) {
+            # We are at a separator
+            $header =~ s/^;//;
+            return $header;
         }
         else {
             # We have another entry
@@ -94,11 +107,40 @@ sub _parse_auth_header_comment {
 
 sub _parse_auth_header_entry {
     my ($self,$remain) = @_;
-    my $key;
-    my $value;
-    ( $key, $remain )   = split( '=', $remain, 2 );
-    $remain = q{} if ! defined $remain;
-    ( $value, $remain ) = split( ' ', $remain, 2 );
+    my $key = q{};
+    my $value = q{};
+    my $in = 'key';
+    while ( length $remain > 0 ) {
+        my $first = substr( $remain,0,1 );
+        $remain   = substr( $remain,1 );
+        if ( $in eq 'key' ) {
+            if ( $first eq '=' ) {
+                $in = 'value';
+            }
+            elsif ( $first =~ /\s/ ) {
+                last;
+            }
+            elsif ( $first eq ';' ) {
+                $remain = ';' . $remain;
+                last;
+            }
+            else {
+                $key .= $first;
+            }
+        }
+        elsif ( $in eq 'value' ) {
+            if ( $first =~ /\s/ ) {
+                last;
+            }
+            elsif ( $first eq ';' ) {
+                $remain = ';' . $remain;
+                last;
+            }
+            else {
+                $value .= $first;
+            }
+        }
+    }
 
     return ($key,$value,$remain);
 }
