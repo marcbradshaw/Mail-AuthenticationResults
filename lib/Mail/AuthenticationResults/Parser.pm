@@ -23,7 +23,7 @@ sub new {
     return $self;
 }
 
-sub as_data {
+sub parsed {
     my ( $self ) = @_;
     return $self->{ 'header' };
 }

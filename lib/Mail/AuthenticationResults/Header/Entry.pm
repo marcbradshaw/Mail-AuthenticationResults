@@ -11,7 +11,7 @@ use base 'Mail::AuthenticationResults::Header::Base';
 
 sub as_string {
     my ( $self ) = @_;
-    return $self->SUPER::as_string() . ';';
+    return $self->SUPER::as_string();
 }
 
 1;

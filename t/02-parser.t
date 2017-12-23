@@ -29,19 +29,19 @@ lives_ok( sub{ $Parser = Mail::AuthenticationResults::Parser->new( $Input ) }, '
 is( ref $Parser, 'Mail::AuthenticationResults::Parser', 'Returns Parser Object' );
 
 my $Header;
-lives_ok( sub{ $Header = $Parser->as_data() }, 'Parser returns data' );
+lives_ok( sub{ $Header = $Parser->parsed() }, 'Parser returns data' );
 is( ref $Header, 'Mail::AuthenticationResults::Header', 'Returns Header Object' );
-is( $Header->as_string(), join( ";\n", @$Input ) . ';', 'As String data matches input data' );
+is( $Header->as_string(), join( ";\n", @$Input ), 'As String data matches input data' );
 
 my $Search;
 lives_ok( sub{ $Search = $Header->search({ 'key'=>'dmarc','value'=>'none' }) }, 'Searches returns data' );
 is( ref $Search, 'Mail::AuthenticationResults::Header::Group', 'Returns Header Group Object' );
-is( $Search->as_string(), $Input->[7] . ';', 'As String data matches expected data' );
+is( $Search->as_string(), $Input->[7], 'As String data matches expected data' );
 
 my $MultiSearch;
 lives_ok( sub{ $MultiSearch = $Header->search({ 'key'=>'dmarc' }) }, 'Searches returns data' );
 is( ref $MultiSearch, 'Mail::AuthenticationResults::Header::Group', 'Returns Header Group Object' );
-is( $MultiSearch->as_string(), join( ";\n", $Input->[5] , $Input->[6], $Input->[7] ) . ';', 'As String data matches expected data' );
+is( $MultiSearch->as_string(), join( ";\n", $Input->[5] , $Input->[6], $Input->[7] ), 'As String data matches expected data' );
 
 done_testing();
 
