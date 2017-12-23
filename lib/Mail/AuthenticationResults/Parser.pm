@@ -3,6 +3,7 @@ use strict;
 use warnings;
 use version; our $VERSION = version->declare('v1.0.0');
 
+use Mail::AuthenticationResults::Header;
 use Mail::AuthenticationResults::Header::Entry;
 use Mail::AuthenticationResults::Header::SubEntry;
 use Mail::AuthenticationResults::Header::Comment;
@@ -12,26 +13,19 @@ sub new {
     my $self = {};
     bless $self, $class;
 
-    my @structured_headers;
+    $self->{ 'header' } = Mail::AuthenticationResults::Header->new();
     foreach my $auth_header ( @$auth_headers ) {
         my $acting_on = Mail::AuthenticationResults::Header::Entry->new();
         $self->_parse_auth_header( \$acting_on, $auth_header );
-        push @structured_headers, $acting_on;
+        $self->{ 'header' }->add_child( $acting_on );
     }
-    $self->{ 'structured_headers' } = \@structured_headers;
 
     return $self;
 }
 
 sub as_data {
     my ( $self ) = @_;
-    return $self->{ 'structured_headers' };
-}
-
-sub as_string {
-    my ( $self ) = @_;
-    my $string = q{};
-    return join( "\n", map { $_->as_string() } @{ $self->as_data() } );
+    return $self->{ 'header' };
 }
 
 sub _parse_auth_header {

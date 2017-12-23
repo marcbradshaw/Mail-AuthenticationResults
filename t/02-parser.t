@@ -24,10 +24,22 @@ my $Input = [
 ];
 
 my $Parser = Mail::AuthenticationResults::Parser->new( $Input );
+my $Header = $Parser->as_data();
 
-is( $Parser->as_string(), join( ";\n", @$Input ) . ';', 'As String' );
+is( $Header->as_string(), join( ";\n", @$Input ) . ';', 'As String' );
+
+print $Header->as_string();
 
 use Data::Dumper;
+
+print "\n\n";
+my $DMARC = $Header->search({ 'key'=>'dmarc','value'=>'none', 'isa'=>'entry' });
+print Dumper $DMARC->as_string();
+
+print Dumper $DMARC->search({ 'key'=>'header.from' })->as_string();
+
+#print Dumper $Header->has( 'dmarc','none' );
+
 #print Dumper $Parser;
 
 #print "\n\n";
