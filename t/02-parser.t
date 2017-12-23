@@ -4,11 +4,12 @@ use strict;
 use warnings FATAL => 'all';
 use lib 't';
 use Test::More;
+use Test::Exception;
 
 use lib 'lib';
 use Mail::AuthenticationResults::Parser;
 
-plan tests => 1;
+#plan tests => noplan1;
 
 chdir 't';
 
@@ -23,26 +24,24 @@ my $Input = [
   'dmarc=none (p=none,d=none) header.from=example.com'
 ];
 
-my $Parser = Mail::AuthenticationResults::Parser->new( $Input );
-my $Header = $Parser->as_data();
+my $Parser;
+lives_ok( sub{ $Parser = Mail::AuthenticationResults::Parser->new( $Input ) }, 'Parser parses' );
+is( ref $Parser, 'Mail::AuthenticationResults::Parser', 'Returns Parser Object' );
 
-is( $Header->as_string(), join( ";\n", @$Input ) . ';', 'As String' );
+my $Header;
+lives_ok( sub{ $Header = $Parser->as_data() }, 'Parser returns data' );
+is( ref $Header, 'Mail::AuthenticationResults::Header', 'Returns Header Object' );
+is( $Header->as_string(), join( ";\n", @$Input ) . ';', 'As String data matches input data' );
 
-print $Header->as_string();
+my $Search;
+lives_ok( sub{ $Search = $Header->search({ 'key'=>'dmarc','value'=>'none' }) }, 'Searches returns data' );
+is( ref $Search, 'Mail::AuthenticationResults::Header::Group', 'Returns Header Group Object' );
+is( $Search->as_string(), $Input->[7] . ';', 'As String data matches expected data' );
 
-use Data::Dumper;
+my $MultiSearch;
+lives_ok( sub{ $MultiSearch = $Header->search({ 'key'=>'dmarc' }) }, 'Searches returns data' );
+is( ref $MultiSearch, 'Mail::AuthenticationResults::Header::Group', 'Returns Header Group Object' );
+is( $MultiSearch->as_string(), join( ";\n", $Input->[5] , $Input->[6], $Input->[7] ) . ';', 'As String data matches expected data' );
 
-print "\n\n";
-my $DMARC = $Header->search({ 'key'=>'dmarc','value'=>'none', 'isa'=>'entry' });
-print Dumper $DMARC->as_string();
-
-print Dumper $DMARC->search({ 'key'=>'header.from' })->as_string();
-
-#print Dumper $Header->has( 'dmarc','none' );
-
-#print Dumper $Parser;
-
-#print "\n\n";
-#print $Parser->as_string();
-#print "\n\n";
+done_testing();
 

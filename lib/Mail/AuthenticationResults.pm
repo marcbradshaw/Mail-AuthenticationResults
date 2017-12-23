@@ -1,5 +1,7 @@
 package Mail::AuthenticationResults;
 
+# ABSTRACT: Easy OO Access to Authentication-Results Headers
+
 use strict;
 use warnings;
 
