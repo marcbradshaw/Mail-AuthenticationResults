@@ -13,9 +13,16 @@ sub HAS_VALUE{ return 0; }
 sub HAS_CHILDREN{ return 0; }
 
 sub new {
-    my ( $class, $self ) = @_;
-    $self = {} if ! $self;
+    my ( $class ) = @_;
+    my $self = {};
     bless $self, $class;
+    return $self;
+}
+
+sub set_key {
+    my ( $self, $key ) = @_;
+    croak 'Does not have key' if ! $self->HAS_KEY();
+    $self->{ 'key' } = $key;
     return $self;
 }
 
@@ -25,6 +32,12 @@ sub key {
     return $self->{ 'key' } // q{};
 }
 
+sub set_value {
+    my ( $self, $value ) = @_;
+    croak 'Does not have value' if ! $self->HAS_VALUE();
+    $self->{ 'value' } = $value;
+    return $self;
+}
 sub value {
     my ( $self ) = @_;
     croak 'Does not have value' if ! $self->HAS_VALUE();

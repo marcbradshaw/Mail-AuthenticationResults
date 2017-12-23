@@ -52,18 +52,13 @@ sub _parse_auth_header {
             # We have a comment
             my $comment;
             ( $comment, $header ) = $self->_parse_auth_header_comment( $header );
-            my $entry = Mail::AuthenticationResults::Header::Comment->new({
-                'value' => $comment,
-            });
+            my $entry = Mail::AuthenticationResults::Header::Comment->new()->set_value( $comment );
             ${$comment_on}->add_child( $entry );
         }
         else {
             # We have another entry
             ( $key, $value, $header ) = $self->_parse_auth_header_entry( $header );
-            my $entry = Mail::AuthenticationResults::Header::SubEntry->new({
-                'key'      => $key,
-                'value'    => $value,
-            });
+            my $entry = Mail::AuthenticationResults::Header::SubEntry->new()->set_key( $key )->set_value( $value );
             $comment_on = \$entry;
             ${$acting_on}->add_child( $entry );
         }
