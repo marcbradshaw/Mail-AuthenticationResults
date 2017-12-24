@@ -1,8 +1,7 @@
 package Mail::AuthenticationResults::Header::Base;
-
+# VERSION
 use strict;
 use warnings;
-use version; our $VERSION = version->declare('v1.0.0');
 use Scalar::Util qw{ weaken };
 use Carp;
 

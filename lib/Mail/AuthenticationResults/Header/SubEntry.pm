@@ -1,7 +1,7 @@
 package Mail::AuthenticationResults::Header::SubEntry;
+# VERSION
 use strict;
 use warnings;
-use version; our $VERSION = version->declare('v1.0.0');
 
 sub HAS_KEY{ return 1; }
 sub HAS_VALUE{ return 1; }
