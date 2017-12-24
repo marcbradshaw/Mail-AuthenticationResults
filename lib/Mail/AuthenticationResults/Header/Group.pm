@@ -4,21 +4,30 @@ use warnings;
 # VERSION
 
 use Carp;
+use Scalar::Util qw{ refaddr };
 
 sub HAS_CHILDREN{ return 1; }
 
 use base 'Mail::AuthenticationResults::Header::Base';
 
+sub add_parent {
+    my ( $self ) = @_;
+    die 'Cannot add group class as a child';
+    return;
+}
+
 sub add_child {
     my ( $self, $child ) = @_;
-    croak 'Does not have children' if ! $self->HAS_CHILDREN();
+    die 'Cannot add a class as its own parent' if refaddr $self == refaddr $child;
+
     if ( ref $child eq 'Mail::AuthenticationResults::Header::Group' ) {
         foreach my $subchild ( @{ $child->children() } ) {
-            push @{ $self->{ 'children' } }, $subchild;
+            $self->SUPER::add_child( $subchild );
         }
+        ## ToDo what to return in this case?
     }
     else {
-        push @{ $self->{ 'children' } }, $child;
+        $self->SUPER::add_child( $child );
     }
 
     return $child;

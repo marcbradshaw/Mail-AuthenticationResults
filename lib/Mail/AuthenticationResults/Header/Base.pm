@@ -2,7 +2,7 @@ package Mail::AuthenticationResults::Header::Base;
 use strict;
 use warnings;
 # VERSION
-use Scalar::Util qw{ weaken };
+use Scalar::Util qw{ weaken refaddr };
 use Carp;
 
 use Mail::AuthenticationResults::Header::Group;
@@ -49,11 +49,32 @@ sub children {
     return $self->{ 'children' } // [];
 }
 
+sub add_parent {
+    my ( $self, $parent ) = @_;
+    return if ( ref $parent eq 'Mail::AuthenticationResults::Header::Group' );
+    die 'Child already has a parent' if exists $self->{ 'parent' };
+    $self->{ 'parent' } = $parent;
+    weaken $self->{ 'parent' };
+    return;
+}
+
 sub add_child {
     my ( $self, $child ) = @_;
     croak 'Does not have children' if ! $self->HAS_CHILDREN();
-    $child->{ 'parent' } = $self;
-    weaken $child->{ 'parent' };
+
+    my $parent_ref = ref $self;
+    my $child_ref  = ref $child;
+
+    die 'Not ac Header object' if ! $parent_ref =~ /^Mail::AuthenticationResults::Header/;
+    die 'Not ac Header object' if ! $child_ref =~ /^Mail::AuthenticationResults::Header/;
+
+    die 'Cannot add a class as its own parent' if refaddr $self == refaddr $child;
+
+    die 'Cannot use base class directly' if $parent_ref eq 'Mail::AuthenticationResults::Header::Base';
+    die 'Cannot use base class directly' if $child_ref  eq 'Mail::AuthenticationResults::Header::Base';
+
+    $child->add_parent( $self );
+
     push @{ $self->{ 'children' } }, $child;
     return $child;
 }
