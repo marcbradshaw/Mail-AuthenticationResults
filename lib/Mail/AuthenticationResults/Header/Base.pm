@@ -21,6 +21,9 @@ sub new {
 sub set_key {
     my ( $self, $key ) = @_;
     croak 'Does not have key' if ! $self->HAS_KEY();
+    die 'Key cannot be undefined' if ! defined $key;
+    die 'Key cannot be empty' if $key eq q{};
+    die 'Invalid characters in key' if $key =~ /[^a-zA-Z0-9\.\-_]/;
     $self->{ 'key' } = $key;
     return $self;
 }
@@ -34,6 +37,9 @@ sub key {
 sub set_value {
     my ( $self, $value ) = @_;
     croak 'Does not have value' if ! $self->HAS_VALUE();
+    die 'Value cannot be undefined' if ! defined $value;
+    #die 'Value cannot be empty' if $value eq q{};
+    die 'Invalid characters in value' if $value =~ /[\s\t \(\);]/;
     $self->{ 'value' } = $value;
     return $self;
 }
@@ -65,8 +71,7 @@ sub add_child {
     my $parent_ref = ref $self;
     my $child_ref  = ref $child;
 
-    die 'Not ac Header object' if ! $parent_ref =~ /^Mail::AuthenticationResults::Header/;
-    die 'Not ac Header object' if ! $child_ref =~ /^Mail::AuthenticationResults::Header/;
+    die 'Not a Header object' if ! $child_ref =~ /^Mail::AuthenticationResults::Header/;
 
     die 'Cannot add a class as its own parent' if refaddr $self == refaddr $child;
 
