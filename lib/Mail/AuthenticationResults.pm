@@ -1,12 +1,9 @@
 package Mail::AuthenticationResults;
-# VERSION
-
 use strict;
 use warnings;
+# VERSION
 
-use version; our $VERSION = version->declare('v1.0.0');
-
-use Mail::AuthenticationResults::Header::Parser;
+use Mail::AuthenticationResults::Parser;
 
 sub new {
     my ( $class ) = @_;

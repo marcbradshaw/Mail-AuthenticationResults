@@ -1,7 +1,7 @@
 package Mail::AuthenticationResults::Header::Entry;
-# VERSION
 use strict;
 use warnings;
+# VERSION
 
 sub HAS_KEY{ return 1; }
 sub HAS_VALUE{ return 1; }

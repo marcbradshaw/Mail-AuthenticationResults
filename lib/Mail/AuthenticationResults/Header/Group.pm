@@ -1,7 +1,7 @@
 package Mail::AuthenticationResults::Header::Group;
-# VERSION
 use strict;
 use warnings;
+# VERSION
 
 use Carp;
 

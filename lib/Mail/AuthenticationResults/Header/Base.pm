@@ -1,7 +1,7 @@
 package Mail::AuthenticationResults::Header::Base;
-# VERSION
 use strict;
 use warnings;
+# VERSION
 use Scalar::Util qw{ weaken };
 use Carp;
 

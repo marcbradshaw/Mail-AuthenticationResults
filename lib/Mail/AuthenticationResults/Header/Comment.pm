@@ -1,7 +1,7 @@
 package Mail::AuthenticationResults::Header::Comment;
-# VERSION
 use strict;
 use warnings;
+# VERSION
 use Scalar::Util qw{ weaken };
 
 sub HAS_VALUE{ return 1; }

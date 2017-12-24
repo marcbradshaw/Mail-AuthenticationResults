@@ -1,7 +1,7 @@
 package Mail::AuthenticationResults::Parser;
-# VERSION
 use strict;
 use warnings;
+# VERSION
 
 use Mail::AuthenticationResults::Header;
 use Mail::AuthenticationResults::Header::Entry;
