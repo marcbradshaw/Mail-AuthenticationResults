@@ -13,7 +13,7 @@ use base 'Mail::AuthenticationResults::Header::Base';
 sub add_parent {
     my ( $self ) = @_;
     die 'Cannot add top level class as a child';
-    return;
+    return; # uncoverable statement
 }
 
 sub add_child {
