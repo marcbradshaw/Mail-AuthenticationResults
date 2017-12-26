@@ -26,7 +26,7 @@ sub add_child {
 sub as_string {
     my ( $self ) = @_;
     my $string = q{};
-    return join( ";\n", map { $_->as_string() } @{ $self->children() } );
+    return $self->value() . ";\n" . join( ";\n", map { $_->as_string() } @{ $self->children() } );
 }
 
 1;
