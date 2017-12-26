@@ -77,7 +77,7 @@ dies_ok( sub{ $Entry->add_child( $Group2 ) }, 'Entry Group dies' );
 lives_ok( sub{ $Entry->add_child( $SubEntry2 ) }, 'Entry SubEntry lives' );
 
 setup();
-dies_ok( sub{ $Group->add_child( $Header2 ) }, 'Group Header dies' );
+lives_ok( sub{ $Group->add_child( $Header2 ) }, 'Group Header lives' );
 dies_ok( sub{ $Group->add_child( $Base2 ) }, 'Group Base dies' );
 lives_ok( sub{ $Group->add_child( $Comment2 ) }, 'Group Comment lives' );
 lives_ok( sub{ $Group->add_child( $Comment2 ) }, 'Group Comment repeat lives' );

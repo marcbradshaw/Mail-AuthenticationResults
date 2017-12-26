@@ -11,7 +11,8 @@ sub HAS_CHILDREN{ return 1; }
 use base 'Mail::AuthenticationResults::Header::Base';
 
 sub add_parent {
-    my ( $self ) = @_;
+    my ( $self, $parent ) = @_;
+    return if ref $parent eq 'Mail::AuthenticationResults::Header::Group';
     die 'Cannot add top level class as a child';
     return; # uncoverable statement
 }

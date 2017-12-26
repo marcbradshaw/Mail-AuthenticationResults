@@ -24,6 +24,12 @@ sub parse {
     my ( $self, $auth_header ) = @_;
 
     $auth_header =~ s/\n/ /g;
+    $auth_header =~ s/^\s+//;
+
+    # Remove Header part if present
+    if ( $auth_header =~ /^Authentication-Results:/i ) {
+        $auth_header =~ s/^Authentication-Results://i;
+    }
 
     my $server_id;
     ( $server_id, $auth_header ) = split( ';', $auth_header, 2 );
