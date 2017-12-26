@@ -9,9 +9,9 @@ use Test::Exception;
 use lib 'lib';
 use Mail::AuthenticationResults::Parser;
 
-my $Parsed = Mail::AuthenticationResults::Parser->new()->parse( ' test.example.com ; foo=bar;dkim=fail ;one=;dmarc=pass' );
+my $Parsed = Mail::AuthenticationResults::Parser->new()->parse( ' test.example.com ; foo=bar;dkim=fail ;one=; two ;three;dmarc=pass' );
 my $Result = $Parsed->as_string();
-is( $Result, "test.example.com;\nfoo=bar;\ndkim=fail;\none=;\ndmarc=pass", 'Result ok' );
+is( $Result, "test.example.com;\nfoo=bar;\ndkim=fail;\none=;\ntwo=;\nthree=;\ndmarc=pass", 'Result ok' );
 
 done_testing();
 
