@@ -36,7 +36,6 @@ sub parse {
         $auth_header = $self->_parse_auth_header( \$acting_on, $auth_header );
         $self->{ 'header' }->add_child( $acting_on );
     }
-
     return $self->parsed();
 }
 
