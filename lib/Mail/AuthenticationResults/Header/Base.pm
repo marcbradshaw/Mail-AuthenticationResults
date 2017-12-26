@@ -126,7 +126,7 @@ sub search {
             }
         }
         else {
-            $match = 0;
+            $match = 0; # uncoverable statement
         }
     }
 
