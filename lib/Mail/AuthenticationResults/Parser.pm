@@ -13,6 +13,16 @@ sub new {
     my $self = {};
     bless $self, $class;
 
+    if ( $auth_header ) {
+        $self->parse( $auth_header );
+    }
+
+    return $self;
+}
+
+sub parse {
+    my ( $self, $auth_header ) = @_;
+
     $auth_header =~ s/\n/ /g;
 
     my $server_id;
@@ -27,7 +37,7 @@ sub new {
         $self->{ 'header' }->add_child( $acting_on );
     }
 
-    return $self;
+    return $self->parsed();
 }
 
 sub parsed {
@@ -37,10 +47,6 @@ sub parsed {
 
 sub _parse_auth_header {
     my ($self,$acting_on,$header) = @_;
-
-    # class entry/comment
-    # key
-    # value
 
     my $key;
     my $value;
