@@ -27,7 +27,11 @@ Mail::AuthenticationResults - Object Oriented Authentication-Results header clas
 
 =head1 DESCRIPTION
 
-Object Oriented Authentication-Results email headers
+Object Oriented Authentication-Results email headers.
+
+This parser copes with most styles of Authentication-Results header seen in the wild, but is not yet fully RFC7601 compliant
+
+It is a work in progress..
 
 =for markdown [![Code on GitHub](https://img.shields.io/badge/github-repo-blue.svg)](https://github.com/marcbradshaw/Mail-AuthenticationResults)
 
