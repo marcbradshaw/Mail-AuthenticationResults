@@ -1,4 +1,5 @@
 package Mail::AuthenticationResults::Header::Base;
+require 5.010;
 use strict;
 use warnings;
 # VERSION
