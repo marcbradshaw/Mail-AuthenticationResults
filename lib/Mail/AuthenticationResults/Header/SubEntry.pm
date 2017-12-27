@@ -3,6 +3,7 @@ require 5.010;
 use strict;
 use warnings;
 # VERSION
+use Carp;
 
 sub HAS_KEY{ return 1; }
 sub HAS_VALUE{ return 1; }
@@ -16,7 +17,7 @@ sub add_child {
         $self->SUPER::add_child( $child );
     }
     else {
-        die 'cannot add a non-comment child to a sub entry';
+        croak 'cannot add a non-comment child to a sub entry';
     }
     return;
 }

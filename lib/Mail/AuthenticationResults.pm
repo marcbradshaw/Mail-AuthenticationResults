@@ -3,6 +3,7 @@ require 5.010;
 use strict;
 use warnings;
 # VERSION
+use Carp;
 
 use Mail::AuthenticationResults::Parser;
 

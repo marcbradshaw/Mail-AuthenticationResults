@@ -3,6 +3,7 @@ require 5.010;
 use strict;
 use warnings;
 # VERSION
+use Carp;
 
 use Mail::AuthenticationResults::Header;
 use Mail::AuthenticationResults::Header::Entry;
@@ -37,7 +38,17 @@ sub parse {
     $server_id =~ s/^\s+//;
     $server_id =~ s/\s+$//;
 
+    my $remain;
+    if ( $server_id =~ /\s/ ) {
+        $server_id =~ s/\s+/ /g;
+        ( $server_id, $remain ) = split( ' ', $server_id, 2 );
+    }
+
     $self->{ 'header' } = Mail::AuthenticationResults::Header->new()->set_value( $server_id );
+    if ( $remain ) {
+        $self->{ 'header' }->add_child( Mail::AuthenticationResults::Header::Comment->new( $remain ) );
+    }
+
     while ( $auth_header ) {
         my $acting_on = Mail::AuthenticationResults::Header::Entry->new();
         $auth_header = $self->_parse_auth_header( \$acting_on, $auth_header );

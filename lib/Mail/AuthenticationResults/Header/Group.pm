@@ -3,9 +3,8 @@ require 5.010;
 use strict;
 use warnings;
 # VERSION
-
-use Carp;
 use Scalar::Util qw{ refaddr };
+use Carp;
 
 sub HAS_CHILDREN{ return 1; }
 
@@ -13,13 +12,13 @@ use base 'Mail::AuthenticationResults::Header::Base';
 
 sub add_parent {
     my ( $self ) = @_;
-    die 'Cannot add group class as a child';
+    croak 'Cannot add group class as a child';
     return; # uncoverable statement
 }
 
 sub add_child {
     my ( $self, $child ) = @_;
-    die 'Cannot add a class as its own parent' if refaddr $self == refaddr $child;
+    croak 'Cannot add a class as its own parent' if refaddr $self == refaddr $child;
 
     if ( ref $child eq 'Mail::AuthenticationResults::Header::Group' ) {
         foreach my $subchild ( @{ $child->children() } ) {

@@ -45,7 +45,7 @@ dies_ok( sub{ $SubEntry->add_child( $SubEntry ) }, 'SubEntry SubEntry self dies'
 setup();
 dies_ok( sub{ $Header->add_child( $Header2 ) }, 'Header Header dies' );
 dies_ok( sub{ $Header->add_child( $Base2 ) }, 'Header Base dies' );
-dies_ok( sub{ $Header->add_child( $Comment2 ) }, 'Header Comment dies' );
+lives_ok( sub{ $Header->add_child( $Comment2 ) }, 'Header Comment lives' );
 lives_ok( sub{ $Header->add_child( $Entry2 ) }, 'Header Entry lives' );
 dies_ok( sub{ $Header->add_child( $Group2 ) }, 'Header Group dies' );
 dies_ok( sub{ $Header->add_child( $Entry2 ) }, 'Header Entry repeat dies' );

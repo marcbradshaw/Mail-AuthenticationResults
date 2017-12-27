@@ -22,9 +22,9 @@ sub new {
 sub set_key {
     my ( $self, $key ) = @_;
     croak 'Does not have key' if ! $self->HAS_KEY();
-    die 'Key cannot be undefined' if ! defined $key;
-    die 'Key cannot be empty' if $key eq q{};
-    die 'Invalid characters in key' if $key =~ /[^a-zA-Z0-9\.\-_]/;
+    croak 'Key cannot be undefined' if ! defined $key;
+    croak 'Key cannot be empty' if $key eq q{};
+    croak 'Invalid characters in key' if $key =~ /[^a-zA-Z0-9\.\-_]/;
     $self->{ 'key' } = $key;
     return $self;
 }
@@ -38,9 +38,9 @@ sub key {
 sub set_value {
     my ( $self, $value ) = @_;
     croak 'Does not have value' if ! $self->HAS_VALUE();
-    die 'Value cannot be undefined' if ! defined $value;
-    #die 'Value cannot be empty' if $value eq q{};
-    die 'Invalid characters in value' if $value =~ /[\s\t \(\);]/;
+    croak 'Value cannot be undefined' if ! defined $value;
+    #croak 'Value cannot be empty' if $value eq q{};
+    croak 'Invalid characters in value' if $value =~ /[\s\t \(\);]/;
     $self->{ 'value' } = $value;
     return $self;
 }
@@ -59,7 +59,7 @@ sub children {
 sub add_parent {
     my ( $self, $parent ) = @_;
     return if ( ref $parent eq 'Mail::AuthenticationResults::Header::Group' );
-    die 'Child already has a parent' if exists $self->{ 'parent' };
+    croak 'Child already has a parent' if exists $self->{ 'parent' };
     $self->{ 'parent' } = $parent;
     weaken $self->{ 'parent' };
     return;
@@ -72,12 +72,12 @@ sub add_child {
     my $parent_ref = ref $self;
     my $child_ref  = ref $child;
 
-    die 'Not a Header object' if ! $child_ref =~ /^Mail::AuthenticationResults::Header/;
+    croak 'Not a Header object' if ! $child_ref =~ /^Mail::AuthenticationResults::Header/;
 
-    die 'Cannot add a class as its own parent' if refaddr $self == refaddr $child;
+    croak 'Cannot add a class as its own parent' if refaddr $self == refaddr $child;
 
-    die 'Cannot use base class directly' if $parent_ref eq 'Mail::AuthenticationResults::Header::Base';
-    die 'Cannot use base class directly' if $child_ref  eq 'Mail::AuthenticationResults::Header::Base';
+    croak 'Cannot use base class directly' if $parent_ref eq 'Mail::AuthenticationResults::Header::Base';
+    croak 'Cannot use base class directly' if $child_ref  eq 'Mail::AuthenticationResults::Header::Base';
 
     $child->add_parent( $self );
 

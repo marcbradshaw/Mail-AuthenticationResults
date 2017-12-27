@@ -3,7 +3,6 @@ require 5.010;
 use strict;
 use warnings;
 # VERSION
-
 use Carp;
 
 sub HAS_VALUE{ return 1; }
@@ -14,14 +13,13 @@ use base 'Mail::AuthenticationResults::Header::Base';
 sub add_parent {
     my ( $self, $parent ) = @_;
     return if ref $parent eq 'Mail::AuthenticationResults::Header::Group';
-    die 'Cannot add top level class as a child';
+    croak 'Cannot add top level class as a child';
     return; # uncoverable statement
 }
 
 sub add_child {
     my ( $self, $child ) = @_;
-    die 'Cannot add a Comment as a child of a Header' if ref $child eq 'Mail::AuthenticationResults::Header::Comment';
-    die 'Cannot add a SubEntry as a child of a Header' if ref $child eq 'Mail::AuthenticationResults::Header::SubEntry';
+    croak 'Cannot add a SubEntry as a child of a Header' if ref $child eq 'Mail::AuthenticationResults::Header::SubEntry';
     return $self->SUPER::add_child( $child );
 }
 
