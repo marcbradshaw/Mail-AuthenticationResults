@@ -104,7 +104,10 @@ sub search {
 
     if ( exists( $search->{ 'key' } ) ) {
         if ( $self->HAS_KEY() ) {
-            if ( lc $search->{ 'key' } eq lc $self->key() ) {
+            if ( ref $search->{ 'key' } eq 'Regexp' && $self->key() =~ m/$search->{'key'}/ ) {
+                $match = $match && 1;
+            }
+            elsif ( lc $search->{ 'key' } eq lc $self->key() ) {
                 $match = $match && 1;
             }
             else {
@@ -118,7 +121,10 @@ sub search {
 
     if ( exists( $search->{ 'value' } ) ) {
         if ( $self->HAS_VALUE() ) {
-            if ( lc $search->{ 'value' } eq lc $self->value() ) {
+            if ( ref $search->{ 'value' } eq 'Regexp' && $self->value() =~ m/$search->{'value'}/ ) {
+                $match = $match && 1;
+            }
+            elsif ( lc $search->{ 'value' } eq lc $self->value() ) {
                 $match = $match && 1;
             }
             else {
