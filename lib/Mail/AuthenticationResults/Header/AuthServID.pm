@@ -22,7 +22,7 @@ sub ALLOWED_CHILDREN {
 sub as_string {
     my ( $self ) = @_;
     my $string = q{};
-    return join( ' ', $self->value(), map { $_->as_string() } @{ $self->children() } );
+    return join( ' ', $self->stringify( $self->value() ), map { $_->as_string() } @{ $self->children() } );
 }
 
 1;

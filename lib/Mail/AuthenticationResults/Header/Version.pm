@@ -29,7 +29,7 @@ sub set_value {
 
     croak 'Does not have value' if ! $self->HAS_VALUE();
     croak 'Value cannot be undefined' if ! defined $value;
-    croak 'Value must be numeric' if ! $value =~ /^[0-9]+$/;
+    croak 'Value must be numeric' if $value =~ /[^0-9]/;
 
     $self->{ 'value' } = $value;
     return $self;

@@ -23,9 +23,6 @@ sub set_value {
     my ( $self, $value ) = @_;
     croak 'Does not have value' if ! $self->HAS_VALUE();
     croak 'Value cannot be undefined' if ! defined $value;
-    #if ( ref $value ne 'Mail::AuthentictionResults::Header::AuthServID' ) {
-    #    $value = Mail::AuthenticationResults::Header::AuthServID->new()->set_value( $value );
-    #}
     croak 'value should be an AuthServID type' if ref $value ne 'Mail::AuthenticationResults::Header::AuthServID';
     $self->{ 'value' } = $value;
     return $self;
