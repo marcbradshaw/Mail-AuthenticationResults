@@ -9,6 +9,8 @@ use Mail::AuthenticationResults::Header;
 use Mail::AuthenticationResults::Header::Entry;
 use Mail::AuthenticationResults::Header::SubEntry;
 use Mail::AuthenticationResults::Header::Comment;
+use Mail::AuthenticationResults::Header::AuthServID;
+use Mail::AuthenticationResults::Header::Version;
 
 sub new {
     my ( $class, $auth_header ) = @_;
@@ -23,35 +25,59 @@ sub new {
 }
 
 sub parse {
-    my ( $self, $auth_header ) = @_;
+    my ( $self, $header ) = @_;
 
-    $auth_header =~ s/\n/ /g;
-    $auth_header =~ s/^\s+//;
+    $header =~ s/\n/ /g;
+    $header =~ s/^\s+//;
 
     # Remove Header part if present
-    if ( $auth_header =~ /^Authentication-Results:/i ) {
-        $auth_header =~ s/^Authentication-Results://i;
+    if ( $header =~ /^Authentication-Results:/i ) {
+        $header =~ s/^Authentication-Results://i;
     }
 
-    my $server_id;
-    ( $server_id, $auth_header ) = split( ';', $auth_header, 2 );
-    $server_id =~ s/^\s+//;
-    $server_id =~ s/\s+$//;
+    $header =~ s/^\s+//;
 
-    my $remain;
-    if ( $server_id =~ /\s/ ) {
-        $server_id =~ s/\s+/ /g;
-        ( $server_id, $remain ) = split( ' ', $server_id, 2 );
+    my $authserv_id = Mail::AuthenticationResults::Header::AuthServID->new();
+    my $key;
+    my $value;
+    ( $value, $header ) = $self->_parse_auth_header_servid( $header );
+    $authserv_id->set_value( $value );
+
+    $value = q{};
+    while ( length($header) > 0 ) {
+        $header =~ s/^\s+//;
+        if ( $header =~ /^\(/ ) {
+            # We have a comment
+            my $comment;
+            ( $comment, $header ) = $self->_parse_auth_header_comment( $header );
+            my $entry = Mail::AuthenticationResults::Header::Comment->new()->set_value( $comment );
+            $authserv_id->add_child( $entry );
+        }
+        elsif ( $header =~ /^;/ ) {
+            # We are at a separator
+            $header =~ s/^;//;
+            last;
+        }
+        else {
+            # We have another entry
+            ( $key, $value, $header ) = $self->_parse_auth_header_entry( $header );
+            if ( ! $value && $key =~ /^[0-9]+$/ ) {
+                my $entry = Mail::AuthenticationResults::Header::Version->new()->set_value( $key );
+                $authserv_id->add_child( $entry );
+            }
+            else {
+                my $entry = Mail::AuthenticationResults::Header::SubEntry->new()->set_key( $key )->set_value( $value );
+                $authserv_id->add_child( $entry );
+            }
+        }
+        $header = q{} if ! $header;
     }
 
-    $self->{ 'header' } = Mail::AuthenticationResults::Header->new()->set_value( $server_id );
-    if ( $remain ) {
-        $self->{ 'header' }->add_child( Mail::AuthenticationResults::Header::Comment->new( $remain ) );
-    }
+    $self->{ 'header' } = Mail::AuthenticationResults::Header->new()->set_value( $authserv_id );
 
-    while ( $auth_header ) {
+    while ( $header ) {
         my $acting_on = Mail::AuthenticationResults::Header::Entry->new();
-        $auth_header = $self->_parse_auth_header( \$acting_on, $auth_header );
+        $header = $self->_parse_auth_header( \$acting_on, $header );
         $self->{ 'header' }->add_child( $acting_on );
     }
     return $self->parsed();
@@ -166,6 +192,27 @@ sub _parse_auth_header_entry {
     }
 
     return ($key,$value,$remain);
+}
+
+sub _parse_auth_header_servid {
+    my ($self,$remain) = @_;
+    my $value = q{};
+    while ( length $remain > 0 ) {
+        my $first = substr( $remain,0,1 );
+        $remain   = substr( $remain,1 );
+        if ( $first =~ /\s/ ) {
+            last;
+        }
+        elsif ( $first eq ';' ) {
+            $remain = ';' . $remain;
+            last;
+        }
+        else {
+            $value .= $first;
+        }
+    }
+
+    return ($value,$remain);
 }
 
 1;

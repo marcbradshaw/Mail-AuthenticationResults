@@ -18,7 +18,7 @@ my $ARHeader = 'Authentication-Results: mx.google.com;
 my $Parsed;
 lives_ok( sub{ $Parsed = Mail::AuthenticationResults::Parser->new()->parse( $ARHeader ) }, 'Parse lives' );
 
-is ( $Parsed->value(), 'mx.google.com', 'ServID' );
+is ( $Parsed->value()->value(), 'mx.google.com', 'ServID' );
 is ( scalar @{$Parsed->search({ 'key'=>'spf','value'=>'pass' })->children() }, 1, 'SPF Pass' );
 is ( scalar @{$Parsed->search({ 'key'=>'dkim','value'=>'pass' })->search({ 'key'=>'header.i','value'=>'@fastmail.com' })->children() }, 1, 'DKIM fastmail.com Pass' );
 is ( scalar @{$Parsed->search({ 'key'=>'dkim','value'=>'pass' })->search({ 'key'=>'header.i','value'=>'@messagingengine.com' })->children() }, 1, 'DKIM messagingengine.com Pass' );

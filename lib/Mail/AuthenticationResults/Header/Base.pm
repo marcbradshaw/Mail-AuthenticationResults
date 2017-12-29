@@ -11,6 +11,7 @@ use Mail::AuthenticationResults::Header::Group;
 sub HAS_KEY{ return 0; }
 sub HAS_VALUE{ return 0; }
 sub HAS_CHILDREN{ return 0; }
+sub ALLOWED_CHILDREN{ return 0; }
 
 sub new {
     my ( $class ) = @_;
@@ -44,6 +45,7 @@ sub set_value {
     $self->{ 'value' } = $value;
     return $self;
 }
+
 sub value {
     my ( $self ) = @_;
     croak 'Does not have value' if ! $self->HAS_VALUE();
@@ -60,6 +62,7 @@ sub add_parent {
     my ( $self, $parent ) = @_;
     return if ( ref $parent eq 'Mail::AuthenticationResults::Header::Group' );
     croak 'Child already has a parent' if exists $self->{ 'parent' };
+    croak 'Cannot add parent' if ! $parent->ALLOWED_CHILDREN( $self );
     $self->{ 'parent' } = $parent;
     weaken $self->{ 'parent' };
     return;
@@ -68,6 +71,7 @@ sub add_parent {
 sub add_child {
     my ( $self, $child ) = @_;
     croak 'Does not have children' if ! $self->HAS_CHILDREN();
+    croak 'Cannot add child' if ! $self->ALLOWED_CHILDREN( $child );
 
     my $parent_ref = ref $self;
     my $child_ref  = ref $child;
@@ -87,7 +91,16 @@ sub add_child {
 
 sub as_string {
     my ( $self ) = @_;
-    my $string = $self->key() . '=' . $self->value();
+    my $string = $self->key();
+    if ( $self->value() ) {
+        $string .= '=' . $self->value();
+    }
+    else {
+        # We special case none here
+        if ( $self->key() ne 'none' ) {
+             $string .= '=';
+        }
+    }
     if ( $self->HAS_CHILDREN() ) {
         foreach my $child ( @{$self->children()} ) {
             $string .= ' ' . $child->as_string();
@@ -138,29 +151,11 @@ sub search {
     }
 
     if ( exists( $search->{ 'isa' } ) ) {
-        if ( lc $search->{ 'isa' } eq 'entry' ) {
-            if ( ref $self eq 'Mail::AuthenticationResults::Header::Entry' ) {
-                $match = $match && 1;
-            }
-            else {
-                $match = 0;
-            }
+        if ( lc ref $self eq 'mail::authenticationresults::header::' . lc $search->{ 'isa' } ) {
+            $match = $match && 1;
         }
-        if ( lc $search->{ 'isa' } eq 'subentry' ) {
-            if ( ref $self eq 'Mail::AuthenticationResults::Header::SubEntry' ) {
-                $match = $match && 1;
-            }
-            else {
-                $match = 0;
-            }
-        }
-        if ( lc $search->{ 'isa' } eq 'comment' ) {
-            if ( ref $self eq 'Mail::AuthenticationResults::Header::Comment' ) {
-                $match = $match && 1;
-            }
-            else {
-                $match = 0;
-            }
+        else {
+            $match = 0;
         }
     }
 

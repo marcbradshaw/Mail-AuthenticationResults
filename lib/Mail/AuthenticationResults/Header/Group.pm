@@ -6,9 +6,20 @@ use warnings;
 use Scalar::Util qw{ refaddr };
 use Carp;
 
+use base 'Mail::AuthenticationResults::Header::Base';
+
 sub HAS_CHILDREN{ return 1; }
 
-use base 'Mail::AuthenticationResults::Header::Base';
+sub ALLOWED_CHILDREN {
+    my ( $self, $parent ) = @_;
+    return 1 if ref $parent eq 'Mail::AuthenticationResults::Header::AuthServID';
+    return 1 if ref $parent eq 'Mail::AuthenticationResults::Header::Comment';
+    return 1 if ref $parent eq 'Mail::AuthenticationResults::Header::Entry';
+    return 1 if ref $parent eq 'Mail::AuthenticationResults::Header::Group';
+    return 1 if ref $parent eq 'Mail::AuthenticationResults::Header::SubEntry';
+    return 1 if ref $parent eq 'Mail::AuthenticationResults::Header';
+    return 0;
+}
 
 sub add_parent {
     my ( $self ) = @_;

@@ -5,10 +5,31 @@ use warnings;
 # VERSION
 use Carp;
 
+use Mail::AuthenticationResults::Header::AuthServID;
+
+use base 'Mail::AuthenticationResults::Header::Base';
+
 sub HAS_VALUE{ return 1; }
 sub HAS_CHILDREN{ return 1; }
 
-use base 'Mail::AuthenticationResults::Header::Base';
+sub ALLOWED_CHILDREN {
+    my ( $self, $parent ) = @_;
+    return 1 if ref $parent eq 'Mail::AuthenticationResults::Header::Entry';
+    return 1 if ref $parent eq 'Mail::AuthenticationResults::Header::Comment';
+    return 0;
+}
+
+sub set_value {
+    my ( $self, $value ) = @_;
+    croak 'Does not have value' if ! $self->HAS_VALUE();
+    croak 'Value cannot be undefined' if ! defined $value;
+    #if ( ref $value ne 'Mail::AuthentictionResults::Header::AuthServID' ) {
+    #    $value = Mail::AuthenticationResults::Header::AuthServID->new()->set_value( $value );
+    #}
+    croak 'value should be an AuthServID type' if ref $value ne 'Mail::AuthenticationResults::Header::AuthServID';
+    $self->{ 'value' } = $value;
+    return $self;
+}
 
 sub add_parent {
     my ( $self, $parent ) = @_;
@@ -26,7 +47,11 @@ sub add_child {
 sub as_string {
     my ( $self ) = @_;
     my $string = q{};
-    return $self->value() . ";\n" . join( ";\n", map { $_->as_string() } @{ $self->children() } );
+    my $value = q{};
+    if ( $self->value() ) {
+        $value = $self->value()->as_string();
+    }
+    return $value . ";\n" . join( ";\n", map { $_->as_string() } @{ $self->children() } );
 }
 
 1;

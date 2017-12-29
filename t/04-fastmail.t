@@ -23,7 +23,7 @@ my $ARHeader = 'Authentication-Results: mx6.messagingengine.com;
 my $Parsed;
 lives_ok( sub{ $Parsed = Mail::AuthenticationResults::Parser->new()->parse( $ARHeader ) }, 'Parse lives' );
 
-is ( $Parsed->value(), 'mx6.messagingengine.com', 'ServID' );
+is ( $Parsed->value()->value(), 'mx6.messagingengine.com', 'ServID' );
 is ( scalar @{$Parsed->search({ 'key'=>'spf','value'=>'pass' })->children() }, 1, 'SPF Pass' );
 is ( scalar @{$Parsed->search({ 'key'=>'dkim','value'=>'pass' })->search({ 'key'=>'header.i','value'=>'@mail.ru' })->children() }, 1, 'DKIM Pass' );
 is ( scalar @{$Parsed->search({ 'key'=>'dmarc','value'=>'pass' })->children() }, 1, 'DMARC Pass' );

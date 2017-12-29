@@ -6,9 +6,9 @@ use warnings;
 use Scalar::Util qw{ weaken };
 use Carp;
 
-sub HAS_VALUE{ return 1; }
-
 use base 'Mail::AuthenticationResults::Header::Base';
+
+sub HAS_VALUE{ return 1; }
 
 sub set_value {
     my ( $self, $value ) = @_;
