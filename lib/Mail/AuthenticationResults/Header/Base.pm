@@ -25,7 +25,7 @@ sub set_key {
     croak 'Does not have key' if ! $self->HAS_KEY();
     croak 'Key cannot be undefined' if ! defined $key;
     croak 'Key cannot be empty' if $key eq q{};
-    croak 'Invalid characters in key' if $key =~ /[^a-zA-Z0-9\.\-_]/;
+    croak 'Invalid characters in key' if $key =~ /"/;
     $self->{ 'key' } = $key;
     return $self;
 }
@@ -41,7 +41,7 @@ sub set_value {
     croak 'Does not have value' if ! $self->HAS_VALUE();
     croak 'Value cannot be undefined' if ! defined $value;
     #croak 'Value cannot be empty' if $value eq q{};
-    croak 'Invalid characters in value' if $value =~ /[\s\t \(\);]/;
+    croak 'Invalid characters in value' if $value =~ /"/;
     $self->{ 'value' } = $value;
     return $self;
 }
@@ -50,6 +50,17 @@ sub value {
     my ( $self ) = @_;
     croak 'Does not have value' if ! $self->HAS_VALUE();
     return $self->{ 'value' } // q{};
+}
+
+sub stringify {
+    my ( $self, $value ) = @_;
+    my $string = $value // q{};
+
+    if ( $string =~ /[\s\t \(\);]/ ) {
+        $string = '"' . $string . '"';
+    }
+
+    return $string;
 }
 
 sub children {
@@ -87,9 +98,9 @@ sub add_child {
 
 sub as_string {
     my ( $self ) = @_;
-    my $string = $self->key();
+    my $string = $self->stringify( $self->key() );
     if ( $self->value() ) {
-        $string .= '=' . $self->value();
+        $string .= '=' . $self->stringify( $self->value() );
     }
     else {
         # We special case none here

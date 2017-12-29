@@ -25,29 +25,45 @@ test_key_dies( $Base );
 test_key_dies( $Comment );
 test_key_dies( $Entry );
 test_key_dies( $Group );
-test_key_dies( $Header );
+#test_key_dies( $Header );
 test_key_dies( $SubEntry );
 
 test_value_dies( $Base );
 #test_value_dies( $Comment ); # Tested elsewhere
 test_value_dies( $Entry );
 test_value_dies( $Group );
-test_value_dies( $Header );
+#test_value_dies( $Header );
 test_value_dies( $SubEntry );
 
 sub test_key_dies {
     my ( $class ) = @_;
+    return unless $class->HAS_KEY();
+    if ( $class->HAS_VALUE() ) {
+        $class->set_value( 'test' );
+    }
     dies_ok( sub{ $class->set_key() }, ( ref $class ) . ' set null key' );
     dies_ok( sub{ $class->set_key( '' ) }, ( ref $class ) . ' set empty key' );
-    dies_ok( sub{ $class->set_key( 'test key!' ) }, ( ref $class ) . ' set invalid key' );
+    lives_ok( sub{ $class->set_key( 'test key!' ) }, ( ref $class ) . ' set key spaces' );
+    is( $class->as_string(), '"test key!"=test', 'Stringifies spaces correfctly' );
+    lives_ok( sub{ $class->set_key( 'test;' ) }, ( ref $class ) . ' set key semicolon' );
+    is( $class->as_string(), '"test;"=test', 'Stringifies semicolon correfctly' );
+    lives_ok( sub{ $class->set_key( 'test(test)' ) }, ( ref $class ) . ' set key parens' );
+    is( $class->as_string(), '"test(test)"=test', 'Stringifies parens correfctly' );
 }
 
 sub test_value_dies {
     my ( $class ) = @_;
+    return unless $class->HAS_VALUE();
+    if ( $class->HAS_KEY() ) {
+        $class->set_key( 'test' );
+    }
     dies_ok( sub{ $class->set_value() }, ( ref $class ) . ' set null value' );
-    dies_ok( sub{ $class->set_value( 'With space' ) }, ( ref $class ) . ' set invalid value spaces' );
-    dies_ok( sub{ $class->set_value( 'pass;' ) }, ( ref $class ) . ' set invalid value semicolon' );
-    dies_ok( sub{ $class->set_value( 'with(parens)' ) }, ( ref $class ) . ' set invalid value comment' );
+    lives_ok( sub{ $class->set_value( 'With space' ) }, ( ref $class ) . ' set invalid value spaces' );
+    is( $class->as_string(), 'test="With space"', 'Stringifies spaces correfctly' );
+    lives_ok( sub{ $class->set_value( 'pass;' ) }, ( ref $class ) . ' set invalid value semicolon' );
+    is( $class->as_string(), 'test="pass;"', 'Stringifies semicolon correfctly' );
+    lives_ok( sub{ $class->set_value( 'with(parens)' ) }, ( ref $class ) . ' set invalid value comment' );
+    is( $class->as_string(), 'test="with(parens)"', 'Stringifies parens correfctly' );
 }
 
 done_testing();

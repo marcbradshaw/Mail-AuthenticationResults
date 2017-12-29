@@ -24,7 +24,6 @@ sub set_value {
     }
     croak 'Mismatched parens in comment' if $depth != 0;
 
-
     $self->{ 'value' } = $value;
     return $self;
 }

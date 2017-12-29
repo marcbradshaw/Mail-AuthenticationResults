@@ -23,8 +23,5 @@ my $Parsed;
 lives_ok( sub{ $Parsed = Mail::AuthenticationResults::Parser->new()->parse( $ARHeader ) }, 'Comment heavy example parses' );
 is( $Parsed->as_string, $AsString, 'as string is as expected' );
 
-#use Data::Dumper;
-#warn Dumper $Parsed;
-
 done_testing();
 
