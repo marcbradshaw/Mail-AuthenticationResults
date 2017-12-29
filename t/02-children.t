@@ -90,7 +90,7 @@ dies_ok( sub{ $Entry->add_child( $Entry2 ) }, 'Entry Entry dies' );
 dies_ok( sub{ $Entry->add_child( $Group2 ) }, 'Entry Group dies' );
 lives_ok( sub{ $Entry->add_child( $SubEntry2 ) }, 'Entry SubEntry lives' );
 dies_ok( sub{ $Entry->add_child( $AuthServID) }, 'Entry AuthServID dies' );
-dies_ok( sub{ $Entry->add_child( $Version ) }, 'Entry Version dies' );
+lives_ok( sub{ $Entry->add_child( $Version ) }, 'Entry Version lives' );
 
 setup();
 lives_ok( sub{ $Group->add_child( $Header2 ) }, 'Group Header lives' );
@@ -115,7 +115,7 @@ dies_ok( sub{ $SubEntry->add_child( $Entry2 ) }, 'SubEntry Entry dies' );
 dies_ok( sub{ $SubEntry->add_child( $Group2 ) }, 'SubEntry Group dies' );
 dies_ok( sub{ $SubEntry->add_child( $SubEntry2 ) }, 'SubEntry SubEntry dies' );
 dies_ok( sub{ $SubEntry->add_child( $AuthServID) }, 'SubEntry AuthServID dies' );
-dies_ok( sub{ $SubEntry->add_child( $Version ) }, 'SubEntry Version dies' );
+lives_ok( sub{ $SubEntry->add_child( $Version ) }, 'SubEntry Version lives' );
 
 setup();
 dies_ok( sub{ $AuthServID->add_child( $Header2 ) }, 'AuthServID Header dies' );

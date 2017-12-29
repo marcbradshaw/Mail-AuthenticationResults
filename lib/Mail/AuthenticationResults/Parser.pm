@@ -75,6 +75,12 @@ sub tokenise {
         elsif ( $header =~ /^"/ ) {
             $token = Mail::AuthenticationResults::Token::QuotedString->new( $header );
         }
+        elsif ( $header =~ /^\./ ) {
+            $token = Mail::AuthenticationResults::Token::Assignment->new( $header );
+        }
+        elsif ( $header =~ /^\// ) {
+            $token = Mail::AuthenticationResults::Token::Assignment->new( $header );
+        }
         elsif ( $header =~ /^=/ ) {
             $token = Mail::AuthenticationResults::Token::Assignment->new( $header );
         }
@@ -109,7 +115,12 @@ sub _parse_authservid {
 
         if ( $token->is() eq 'assignment' ) {
             if ( $expecting eq 'assignment' ) {
-                $expecting = 'value';
+                if ( $token->value() eq '=' ) {
+                    $expecting = 'value';
+                }
+                else {
+                    croak 'unexpected token';
+                }
             }
             else {
                 croak 'not expecting an assignment';
@@ -169,7 +180,15 @@ sub _parse_entry {
 
         if ( $token->is() eq 'assignment' ) {
             if ( $expecting eq 'assignment' ) {
-                $expecting = 'value';
+                if ( $token->value() eq '=' ) {
+                    $expecting = 'value';
+                }
+                elsif ( $token->value() eq '.' ) {
+                    $expecting = 'keymod';
+                }
+                elsif ( $token->value() eq '/' ) {
+                    $expecting = 'version';
+                }
             }
             else {
                 croak 'not expecting an assignment';
@@ -188,6 +207,20 @@ sub _parse_entry {
                 }
                 else {
                     $working_on = Mail::AuthenticationResults::Header::SubEntry->new()->set_key( $token->value() );
+                }
+                $expecting = 'assignment';
+            }
+            elsif ( $expecting eq 'keymod' ) {
+                $working_on->set_key( $working_on->key() . '.' . $token->value() );
+                $expecting = 'assignment';
+            }
+            elsif ( $expecting eq 'version' ) {
+                if ( $token->value() =~ /^[0-9]+$/ ) {
+                    # Looks like a version
+                    $working_on->add_child( Mail::AuthenticationResults::Header::Version->new()->set_value( $token->value() ) );
+                }
+                else {
+                    croak 'bad version token';
                 }
                 $expecting = 'assignment';
             }

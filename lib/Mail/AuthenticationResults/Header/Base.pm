@@ -68,6 +68,11 @@ sub add_parent {
     return;
 }
 
+sub parent {
+    my ( $self ) = @_;
+    return $self->{ 'parent' };
+}
+
 sub add_child {
     my ( $self, $child ) = @_;
     croak 'Does not have children' if ! $self->HAS_CHILDREN();

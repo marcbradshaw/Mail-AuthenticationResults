@@ -14,6 +14,7 @@ sub HAS_CHILDREN{ return 1; }
 sub ALLOWED_CHILDREN {
     my ( $self, $child ) = @_;
     return 1 if ref $child eq 'Mail::AuthenticationResults::Header::Comment';
+    return 1 if ref $child eq 'Mail::AuthenticationResults::Header::Version';
     return 0;
 }
 

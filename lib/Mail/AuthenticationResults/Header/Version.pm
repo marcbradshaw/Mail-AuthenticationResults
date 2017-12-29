@@ -12,7 +12,16 @@ sub HAS_VALUE{ return 1; }
 
 sub as_string {
     my ( $self ) = @_;
-    return $self->value();
+
+    my $string = q{};
+
+    if ( ref $self->parent() ne 'Mail::AuthenticationResults::Header::AuthServID' ) {
+        $string = '/ ';
+    }
+
+    $string .= $self->value();
+
+    return $string;
 }
 
 sub set_value {

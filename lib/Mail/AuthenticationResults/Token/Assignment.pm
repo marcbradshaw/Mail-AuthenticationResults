@@ -19,11 +19,13 @@ sub parse {
     my $value = q{};
 
     my $first = substr( $header,0,1 );
-    croak 'not an assignment' if $first ne '=';
+    if ( $first ne '=' && $first ne '.' && $first ne '/' ) {
+        croak 'not an assignment';
+    }
 
     $header   = substr( $header,1 );
 
-    $self->{ 'value' } = '=';
+    $self->{ 'value' } = $first;
     $self->{ 'header' } = $header;
 
     return;
