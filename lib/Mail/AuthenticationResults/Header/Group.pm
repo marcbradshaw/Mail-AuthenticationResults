@@ -29,11 +29,16 @@ sub add_child {
 
     if ( ref $child eq 'Mail::AuthenticationResults::Header::Group' ) {
         foreach my $subchild ( @{ $child->children() } ) {
-            $self->SUPER::add_child( $subchild );
+            $self->add_child( $subchild );
         }
         ## ToDo what to return in this case?
     }
     else {
+        foreach my $current_child ( @{ $self->children() } ) {
+            if ( $current_child == $child ) {
+                return $child;
+            }
+        }
         $self->SUPER::add_child( $child );
     }
 

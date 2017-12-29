@@ -96,15 +96,22 @@ setup();
 lives_ok( sub{ $Group->add_child( $Header2 ) }, 'Group Header lives' );
 dies_ok( sub{ $Group->add_child( $Base2 ) }, 'Group Base dies' );
 lives_ok( sub{ $Group->add_child( $Comment2 ) }, 'Group Comment lives' );
-lives_ok( sub{ $Group->add_child( $Comment2 ) }, 'Group Comment repeat lives' );
 lives_ok( sub{ $Group->add_child( $Entry2 ) }, 'Group Entry lives' );
-lives_ok( sub{ $Group->add_child( $Entry2 ) }, 'Group Entry repeat lives' );
 lives_ok( sub{ $Group->add_child( $Group2 ) }, 'Group Group lives' );
 lives_ok( sub{ $Group->add_child( $SubEntry2 ) }, 'Group SubEntry lives' );
-lives_ok( sub{ $Group->add_child( $SubEntry2 ) }, 'Group SubEntry repeat lives' );
 lives_ok( sub{ $Group->add_child( $AuthServID) }, 'Group AuthServID lives' );
 lives_ok( sub{ $Group->add_child( $Version ) }, 'Group Version lives' );
+
 # Group repeats should not die, but should not result in duplicates
+is( scalar @{$Group->children()}, 6, 'Has 6 children' );
+lives_ok( sub{ $Group->add_child( $Header2 ) }, 'Group Header repeat lives' );
+lives_ok( sub{ $Group->add_child( $Comment2 ) }, 'Group Comment repeat lives' );
+lives_ok( sub{ $Group->add_child( $Entry2 ) }, 'Group Entry repeat lives' );
+lives_ok( sub{ $Group->add_child( $Group2 ) }, 'Group Group repeat lives' );
+lives_ok( sub{ $Group->add_child( $SubEntry2 ) }, 'Group SubEntry repeat lives' );
+lives_ok( sub{ $Group->add_child( $AuthServID) }, 'Group AuthServID repeat lives' );
+lives_ok( sub{ $Group->add_child( $Version ) }, 'Group Version repeat lives' );
+is( scalar @{$Group->children()}, 6, 'Still has 6 children' );
 
 setup();
 dies_ok( sub{ $SubEntry->add_child( $Header2 ) }, 'SubEntry Header dies' );

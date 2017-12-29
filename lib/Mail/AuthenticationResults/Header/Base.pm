@@ -91,8 +91,8 @@ sub add_child {
     croak 'Cannot add a class as its own parent' if refaddr $self == refaddr $child;
 
     $child->add_parent( $self );
-
     push @{ $self->{ 'children' } }, $child;
+
     return $child;
 }
 
