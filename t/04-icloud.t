@@ -7,8 +7,8 @@ use Test::More;
 use Test::Exception;
 
 use lib 'lib';
-use Mail::AuthenticationResults::Parser;
 use Mail::AuthenticationResults::Header::Group;
+use Mail::AuthenticationResults::Parser;
 
 my $Group = Mail::AuthenticationResults::Header::Group->new();
 

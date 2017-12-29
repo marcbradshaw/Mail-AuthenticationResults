@@ -8,12 +8,12 @@ use Test::Exception;
 
 use lib 'lib';
 use Mail::AuthenticationResults::Header;
+use Mail::AuthenticationResults::Header::AuthServID;
 use Mail::AuthenticationResults::Header::Base;
 use Mail::AuthenticationResults::Header::Comment;
 use Mail::AuthenticationResults::Header::Entry;
 use Mail::AuthenticationResults::Header::Group;
 use Mail::AuthenticationResults::Header::SubEntry;
-use Mail::AuthenticationResults::Header::AuthServID;
 use Mail::AuthenticationResults::Header::Version;
 
 my ( $Header, $Base, $Comment, $Entry, $Group, $SubEntry, $AuthServID, $Version );

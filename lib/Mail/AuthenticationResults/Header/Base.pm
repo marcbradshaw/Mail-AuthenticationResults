@@ -11,7 +11,7 @@ use Mail::AuthenticationResults::Header::Group;
 sub HAS_KEY{ return 0; }
 sub HAS_VALUE{ return 0; }
 sub HAS_CHILDREN{ return 0; }
-sub ALLOWED_CHILDREN{ return 0; }
+sub ALLOWED_CHILDREN{ return 0; } # uncoverable statement
 
 sub new {
     my ( $class ) = @_;

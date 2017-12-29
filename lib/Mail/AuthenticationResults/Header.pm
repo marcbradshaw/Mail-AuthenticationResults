@@ -33,9 +33,7 @@ sub set_value {
 
 sub add_parent {
     my ( $self, $parent ) = @_;
-    return if ref $parent eq 'Mail::AuthenticationResults::Header::Group';
-    croak 'Cannot add top level class as a child';
-    return; # uncoverable statement
+    return;
 }
 
 sub add_child {
