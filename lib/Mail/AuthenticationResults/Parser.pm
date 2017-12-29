@@ -12,6 +12,12 @@ use Mail::AuthenticationResults::Header::Entry;
 use Mail::AuthenticationResults::Header::SubEntry;
 use Mail::AuthenticationResults::Header::Version;
 
+use Mail::AuthenticationResults::Token::Assignment;
+use Mail::AuthenticationResults::Token::Comment;
+use Mail::AuthenticationResults::Token::QuotedString;
+use Mail::AuthenticationResults::Token::Separator;
+use Mail::AuthenticationResults::Token::String;
+
 sub new {
     my ( $class, $auth_header ) = @_;
     my $self = {};
@@ -27,6 +33,24 @@ sub new {
 sub parse {
     my ( $self, $header ) = @_;
 
+    $self->tokenise( $header );
+
+    $self->_parse_authservid();
+
+    while ( @{ $self->{ 'tokenised' } } ) {
+        $self->_parse_entry();
+    }
+
+    return $self->parsed();
+}
+
+
+sub tokenise {
+    my ( $self, $header ) = @_;
+
+    my $token;
+    my @tokenised;
+
     $header =~ s/\n/ /g;
     $header =~ s/^\s+//;
 
@@ -35,184 +59,169 @@ sub parse {
         $header =~ s/^Authentication-Results://i;
     }
 
-    $header =~ s/^\s+//;
-
-    my $authserv_id = Mail::AuthenticationResults::Header::AuthServID->new();
-    my $key;
-    my $value;
-    ( $value, $header ) = $self->_parse_auth_header_servid( $header );
-    $authserv_id->set_value( $value );
-
-    $value = q{};
     while ( length($header) > 0 ) {
+
         $header =~ s/^\s+//;
-        if ( $header =~ /^\(/ ) {
-            # We have a comment
-            my $comment;
-            ( $comment, $header ) = $self->_parse_auth_header_comment( $header );
-            my $entry = Mail::AuthenticationResults::Header::Comment->new()->set_value( $comment );
-            $authserv_id->add_child( $entry );
-        }
-        elsif ( $header =~ /^;/ ) {
-            # We are at a separator
-            $header =~ s/^;//;
+
+        if ( length( $header ) == 0 ) {
             last;
         }
+        elsif ( $header =~ /^\(/ ) {
+            $token = Mail::AuthenticationResults::Token::Comment->new( $header );
+        }
+        elsif ( $header =~ /^;/ ) {
+            $token = Mail::AuthenticationResults::Token::Separator->new( $header );
+        }
+        elsif ( $header =~ /^"/ ) {
+            $token = Mail::AuthenticationResults::Token::QuotedString->new( $header );
+        }
+        elsif ( $header =~ /^=/ ) {
+            $token = Mail::AuthenticationResults::Token::Assignment->new( $header );
+        }
         else {
-            # We have another entry
-            ( $key, $value, $header ) = $self->_parse_auth_header_entry( $header );
-            if ( ! $value && $key =~ /^[0-9]+$/ ) {
-                my $entry = Mail::AuthenticationResults::Header::Version->new()->set_value( $key );
-                $authserv_id->add_child( $entry );
+            $token = Mail::AuthenticationResults::Token::String->new( $header );
+        }
+
+        $header = $token->remainder();
+        push @tokenised, $token;
+    }
+
+    croak 'Nothing to parse' if ! @tokenised;
+
+    $self->{ 'tokenised' } = \@tokenised;
+
+    return;
+}
+
+sub _parse_authservid {
+    my ( $self ) = @_;
+    my $tokenised = $self->{ 'tokenised' };
+
+    my $authserv_id = Mail::AuthenticationResults::Header::AuthServID->new();
+    my $token = shift @$tokenised;
+    $authserv_id->set_value( $token->value() );
+
+    my $expecting = 'key';
+    my $key;
+    TOKEN:
+    while ( @$tokenised ) {
+        $token = shift @$tokenised;
+
+        if ( $token->is() eq 'assignment' ) {
+            if ( $expecting eq 'assignment' ) {
+                $expecting = 'value';
             }
             else {
-                my $entry = Mail::AuthenticationResults::Header::SubEntry->new()->set_key( $key )->set_value( $value );
-                $authserv_id->add_child( $entry );
+                croak 'not expecting an assignment';
             }
         }
-        $header = q{} if ! $header;
+        elsif ( $token->is() eq  'comment' ) {
+            $authserv_id->add_child( Mail::AuthenticationResults::Header::Comment->new()->set_value( $token->value() ) );
+        }
+        elsif ( $token->is() eq 'separator' ) {
+            last TOKEN;
+        }
+        if ( $token->is() eq 'string' ) {
+            if ( $expecting eq 'key' ) {
+                $key = $token;
+                $expecting = 'assignment';
+            }
+            elsif ( $expecting eq 'value' ) {
+                $authserv_id->add_child( Mail::AuthenticationResults::Header::SubEntry->new()->set_key( $key->value() )->set_value( $token->value() ) );
+                $expecting = 'key';
+                undef $key;
+            }
+            else {
+                croak 'not expecting a string';
+            }
+        }
+
+    }
+    if ( $expecting ne 'key' ) {
+        if ( $key->value() =~ /^[0-9]+$/ ) {
+            # Looks like a version
+            $authserv_id->add_child( Mail::AuthenticationResults::Header::Version->new()->set_value( $key->value() ) );
+        }
+        else {
+            # Probably bogus, but who knows!
+            $authserv_id->add_child( Mail::AuthenticationResults::Header::SubEntry->new()->set_key( $key->value() ) );
+        }
     }
 
     $self->{ 'header' } = Mail::AuthenticationResults::Header->new()->set_value( $authserv_id );
+    $self->{ 'tokenised' } = $tokenised;
 
-    while ( $header ) {
-        my $acting_on = Mail::AuthenticationResults::Header::Entry->new();
-        $header = $self->_parse_auth_header( \$acting_on, $header );
-        $self->{ 'header' }->add_child( $acting_on );
+    return;
+}
+
+sub _parse_entry {
+    my ( $self ) = @_;
+    my $tokenised = $self->{ 'tokenised' };
+
+    my $entry = Mail::AuthenticationResults::Header::Entry->new();
+    my $working_on = $entry;
+
+    my $expecting = 'key';
+    my $is_subentry = 0;
+    TOKEN:
+    while ( @$tokenised ) {
+        my $token = shift @$tokenised;
+
+        if ( $token->is() eq 'assignment' ) {
+            if ( $expecting eq 'assignment' ) {
+                $expecting = 'value';
+            }
+            else {
+                croak 'not expecting an assignment';
+            }
+        }
+        elsif ( $token->is() eq  'comment' ) {
+            $working_on->add_child( Mail::AuthenticationResults::Header::Comment->new()->set_value( $token->value() ) );
+        }
+        elsif ( $token->is() eq 'separator' ) {
+            last TOKEN;
+        }
+        if ( $token->is() eq 'string' ) {
+            if ( $expecting eq 'key' ) {
+                if ( ! $is_subentry ) {
+                    $entry->set_key( $token->value() );
+                }
+                else {
+                    $working_on = Mail::AuthenticationResults::Header::SubEntry->new()->set_key( $token->value() );
+                }
+                $expecting = 'assignment';
+            }
+            elsif ( $expecting eq 'value' ) {
+                if ( ! $is_subentry ) {
+                    $entry->set_value( $token->value() );
+                    $is_subentry = 1;
+                }
+                else {
+                    $entry->add_child( $working_on->set_value( $token->value() ) );
+                }
+                $expecting = 'key';
+            }
+            else {
+                croak 'not expecting a string';
+            }
+        }
+
     }
-    return $self->parsed();
+    if ( $expecting ne 'key' ) {
+        if ( $is_subentry ) {
+            $entry->add_child( $working_on );
+        }
+    }
+
+    $self->{ 'header' }->add_child( $entry );
+    $self->{ 'tokenised' } = $tokenised;
+
+    return;
 }
 
 sub parsed {
     my ( $self ) = @_;
     return $self->{ 'header' };
-}
-
-sub _parse_auth_header {
-    my ($self,$acting_on,$header) = @_;
-
-    my $key;
-    my $value;
-
-    $header =~ s/^\s+//;
-    ( $key, $value, $header ) = $self->_parse_auth_header_entry( $header );
-    ${$acting_on}->{ 'key' }   = $key;
-    ${$acting_on}->{ 'value' } = $value;
-
-    $header = q{} if ! $header;
-
-    my $comment_on = $acting_on;
-
-    while ( length($header) > 0 ) {
-        $header =~ s/^\s+//;
-        if ( $header =~ /^\(/ ) {
-            # We have a comment
-            my $comment;
-            ( $comment, $header ) = $self->_parse_auth_header_comment( $header );
-            my $entry = Mail::AuthenticationResults::Header::Comment->new()->set_value( $comment );
-            ${$comment_on}->add_child( $entry );
-        }
-        elsif ( $header =~ /^;/ ) {
-            # We are at a separator
-            $header =~ s/^;//;
-            return $header;
-        }
-        else {
-            # We have another entry
-            ( $key, $value, $header ) = $self->_parse_auth_header_entry( $header );
-            my $entry = Mail::AuthenticationResults::Header::SubEntry->new()->set_key( $key )->set_value( $value );
-            $comment_on = \$entry;
-            ${$acting_on}->add_child( $entry );
-        }
-        $header = q{} if ! $header;
-    }
-
-    return;
-}
-
-sub _parse_auth_header_comment {
-    my ($self,$remain) = @_;
-    my $value = q{};
-    my $depth = 0;
-
-    while ( length $remain > 0 ) {
-        my $first = substr( $remain,0,1 );
-        $remain   = substr( $remain,1 );
-        $value .= $first;
-        if ( $first eq '(' ) {
-            $depth++;
-        }
-        elsif ( $first eq ')' ) {
-            $depth--;
-            last if $depth == 0;
-        }
-    }
-
-    $value =~ s/^\(//;
-    $value =~ s/\)$//;
-
-    return($value,$remain);
-}
-
-sub _parse_auth_header_entry {
-    my ($self,$remain) = @_;
-    my $key = q{};
-    my $value = q{};
-    my $in = 'key';
-    while ( length $remain > 0 ) {
-        my $first = substr( $remain,0,1 );
-        $remain   = substr( $remain,1 );
-        if ( $in eq 'key' ) {
-            if ( $first eq '=' ) {
-                $in = 'value';
-            }
-            elsif ( $first =~ /\s/ ) {
-                last;
-            }
-            elsif ( $first eq ';' ) {
-                $remain = ';' . $remain;
-                last;
-            }
-            else {
-                $key .= $first;
-            }
-        }
-        elsif ( $in eq 'value' ) {
-            if ( $first =~ /\s/ ) {
-                last;
-            }
-            elsif ( $first eq ';' ) {
-                $remain = ';' . $remain;
-                last;
-            }
-            else {
-                $value .= $first;
-            }
-        }
-    }
-
-    return ($key,$value,$remain);
-}
-
-sub _parse_auth_header_servid {
-    my ($self,$remain) = @_;
-    my $value = q{};
-    while ( length $remain > 0 ) {
-        my $first = substr( $remain,0,1 );
-        $remain   = substr( $remain,1 );
-        if ( $first =~ /\s/ ) {
-            last;
-        }
-        elsif ( $first eq ';' ) {
-            $remain = ';' . $remain;
-            last;
-        }
-        else {
-            $value .= $first;
-        }
-    }
-
-    return ($value,$remain);
 }
 
 1;

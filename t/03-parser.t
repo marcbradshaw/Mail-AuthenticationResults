@@ -38,12 +38,12 @@ my $ParsedAuthServID = Mail::AuthenticationResults::Parser->new()->parse( 'test.
 my $AuthServIDValue = $ParsedAuthServID->value();
 is ( ref $AuthServIDValue, 'Mail::AuthenticationResults::Header::AuthServID', 'AuthServID Object Returned' );
 is ( scalar @{ $AuthServIDValue->children() }, 2, 'AuthServID Object has 2 children' );
-is ( ref $AuthServIDValue->children()->[0], 'Mail::AuthenticationResults::Header::Version', 'Version Object Returned' );
-is ( $AuthServIDValue->children()->[0]->value(), '1', 'Version has correct value' );
-is ( ref $AuthServIDValue->children()->[1], 'Mail::AuthenticationResults::Header::Comment', 'Comment Object Returned' );
-is ( $AuthServIDValue->children()->[1]->value(), 'this has a version', 'Comment has correct value' );
-is ( $AuthServIDValue->as_string(), 'test.example.com 1 (this has a version)', 'AuthServID as string is correct' );
-is ( $ParsedAuthServID->as_string(), "test.example.com 1 (this has a version);\nnone", 'Header as string is correct' );
+is ( ref $AuthServIDValue->children()->[1], 'Mail::AuthenticationResults::Header::Version', 'Version Object Returned' );
+is ( $AuthServIDValue->children()->[1]->value(), '1', 'Version has correct value' );
+is ( ref $AuthServIDValue->children()->[0], 'Mail::AuthenticationResults::Header::Comment', 'Comment Object Returned' );
+is ( $AuthServIDValue->children()->[0]->value(), 'this has a version', 'Comment has correct value' );
+is ( $AuthServIDValue->as_string(), 'test.example.com (this has a version) 1', 'AuthServID as string is correct' );
+is ( $ParsedAuthServID->as_string(), "test.example.com (this has a version) 1;\nnone", 'Header as string is correct' );
 
 done_testing();
 
