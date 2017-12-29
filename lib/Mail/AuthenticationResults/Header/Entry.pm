@@ -13,16 +13,10 @@ sub HAS_VALUE{ return 1; }
 sub HAS_CHILDREN{ return 1; }
 
 sub ALLOWED_CHILDREN {
-    my ( $self, $parent ) = @_;
-    return 1 if ref $parent eq 'Mail::AuthenticationResults::Header::Comment';
-    return 1 if ref $parent eq 'Mail::AuthenticationResults::Header::SubEntry';
-    return 0;
-}
-
-sub add_child {
     my ( $self, $child ) = @_;
-    croak 'Cannot add an Entry as a child of an Entry' if ref $child eq 'Mail::AuthenticationResults::Header::Entry';
-    return $self->SUPER::add_child( $child );
+    return 1 if ref $child eq 'Mail::AuthenticationResults::Header::Comment';
+    return 1 if ref $child eq 'Mail::AuthenticationResults::Header::SubEntry';
+    return 0;
 }
 
 sub as_string {

@@ -11,24 +11,19 @@ use base 'Mail::AuthenticationResults::Header::Base';
 sub HAS_CHILDREN{ return 1; }
 
 sub ALLOWED_CHILDREN {
-    my ( $self, $parent ) = @_;
-    return 1 if ref $parent eq 'Mail::AuthenticationResults::Header::AuthServID';
-    return 1 if ref $parent eq 'Mail::AuthenticationResults::Header::Comment';
-    return 1 if ref $parent eq 'Mail::AuthenticationResults::Header::Entry';
-    return 1 if ref $parent eq 'Mail::AuthenticationResults::Header::Group';
-    return 1 if ref $parent eq 'Mail::AuthenticationResults::Header::SubEntry';
-    return 1 if ref $parent eq 'Mail::AuthenticationResults::Header';
+    my ( $self, $child ) = @_;
+    return 1 if ref $child eq 'Mail::AuthenticationResults::Header::AuthServID';
+    return 1 if ref $child eq 'Mail::AuthenticationResults::Header::Comment';
+    return 1 if ref $child eq 'Mail::AuthenticationResults::Header::Entry';
+    return 1 if ref $child eq 'Mail::AuthenticationResults::Header::Group';
+    return 1 if ref $child eq 'Mail::AuthenticationResults::Header::SubEntry';
+    return 1 if ref $child eq 'Mail::AuthenticationResults::Header';
     return 0;
-}
-
-sub add_parent {
-    my ( $self ) = @_;
-    croak 'Cannot add group class as a child';
-    return; # uncoverable statement
 }
 
 sub add_child {
     my ( $self, $child ) = @_;
+    croak 'Cannot add child' if ! $self->ALLOWED_CHILDREN( $child );
     croak 'Cannot add a class as its own parent' if refaddr $self == refaddr $child;
 
     if ( ref $child eq 'Mail::AuthenticationResults::Header::Group' ) {
