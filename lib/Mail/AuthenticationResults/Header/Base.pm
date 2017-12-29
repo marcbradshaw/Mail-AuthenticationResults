@@ -72,16 +72,7 @@ sub add_child {
     my ( $self, $child ) = @_;
     croak 'Does not have children' if ! $self->HAS_CHILDREN();
     croak 'Cannot add child' if ! $self->ALLOWED_CHILDREN( $child );
-
-    my $parent_ref = ref $self;
-    my $child_ref  = ref $child;
-
-    croak 'Not a Header object' if ! $child_ref =~ /^Mail::AuthenticationResults::Header/;
-
     croak 'Cannot add a class as its own parent' if refaddr $self == refaddr $child;
-
-    croak 'Cannot use base class directly' if $parent_ref eq 'Mail::AuthenticationResults::Header::Base';
-    croak 'Cannot use base class directly' if $child_ref  eq 'Mail::AuthenticationResults::Header::Base';
 
     $child->add_parent( $self );
 

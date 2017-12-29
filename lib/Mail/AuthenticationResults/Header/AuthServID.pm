@@ -12,10 +12,10 @@ sub HAS_VALUE{ return 1; }
 sub HAS_CHILDREN{ return 1; }
 
 sub ALLOWED_CHILDREN {
-    my ( $self, $parent ) = @_;
-    return 1 if ref $parent eq 'Mail::AuthenticationResults::Header::SubEntry';
-    return 1 if ref $parent eq 'Mail::AuthenticationResults::Header::Version';
-    return 1 if ref $parent eq 'Mail::AuthenticationResults::Header::Comment';
+    my ( $self, $child ) = @_;
+    return 1 if ref $child eq 'Mail::AuthenticationResults::Header::Comment';
+    return 1 if ref $child eq 'Mail::AuthenticationResults::Header::SubEntry';
+    return 1 if ref $child eq 'Mail::AuthenticationResults::Header::Version';
     return 0;
 }
 

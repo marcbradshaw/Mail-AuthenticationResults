@@ -6,10 +6,10 @@ use warnings;
 use Carp;
 
 use Mail::AuthenticationResults::Header;
+use Mail::AuthenticationResults::Header::AuthServID;
+use Mail::AuthenticationResults::Header::Comment;
 use Mail::AuthenticationResults::Header::Entry;
 use Mail::AuthenticationResults::Header::SubEntry;
-use Mail::AuthenticationResults::Header::Comment;
-use Mail::AuthenticationResults::Header::AuthServID;
 use Mail::AuthenticationResults::Header::Version;
 
 sub new {
