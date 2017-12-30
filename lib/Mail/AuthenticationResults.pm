@@ -33,6 +33,13 @@ Object Oriented Authentication-Results email headers.
 
 This parser copes with most styles of Authentication-Results header seen in the wild, but is not yet fully RFC7601 compliant
 
+Differences from RFC7601
+
+key/value pairs are parsed when present in the authserv-id section, this is against RFC but has been seen in headers added by Yahoo!.
+
+Comments added between key/value pairs will be added after them in the data structures and when stringified.
+
+
 It is a work in progress..
 
 =for markdown [![Code on GitHub](https://img.shields.io/badge/github-repo-blue.svg)](https://github.com/marcbradshaw/Mail-AuthenticationResults)
