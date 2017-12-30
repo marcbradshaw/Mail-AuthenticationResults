@@ -25,9 +25,14 @@ sub parse {
         last if $first eq '(';
         last if $first eq ';';
         last if $first eq '=';
+        # ToDo, can't do this yet as it is valid in values but not in keys
+        #last if $first eq '/';
+        #last if $first eq '.';
         $value .= $first;
         $header   = substr( $header,1 );
     }
+
+    croak 'Not a string' if $value eq q{};
 
     $self->{ 'value' } = $value;
     $self->{ 'header' } = $header;

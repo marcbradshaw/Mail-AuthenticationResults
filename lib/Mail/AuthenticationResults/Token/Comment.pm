@@ -19,6 +19,11 @@ sub parse {
     my $value = q{};
     my $depth = 0;
 
+    my $first = substr( $header,0,1 );
+    if ( $first ne '(' ) {
+        croak 'Not a comment';
+    }
+
     while ( length $header > 0 ) {
         my $first = substr( $header,0,1 );
         $header   = substr( $header,1 );
@@ -30,6 +35,10 @@ sub parse {
             $depth--;
             last if $depth == 0;
         }
+    }
+
+    if ( $depth != 0 ) {
+        croak 'Mismatched parens in comment';
     }
 
     $value =~ s/^\(//;
