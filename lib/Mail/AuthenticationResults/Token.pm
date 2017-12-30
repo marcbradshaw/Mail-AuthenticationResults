@@ -6,9 +6,9 @@ use warnings;
 use Carp;
 
 sub new {
-    my ( $class, $header ) = @_;
+    my ( $class, $header, $args ) = @_;
 
-    my $self = {};
+    my $self = { 'args' => $args };
     bless $self, $class;
 
     $self->{ 'header' } = $header;

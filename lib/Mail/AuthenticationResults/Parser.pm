@@ -48,7 +48,6 @@ sub parse {
 sub tokenise {
     my ( $self, $header ) = @_;
 
-    my $token;
     my @tokenised;
 
     $header =~ s/\n/ /g;
@@ -59,33 +58,41 @@ sub tokenise {
         $header =~ s/^Authentication-Results://i;
     }
 
+    my $args = {};
     while ( length($header) > 0 ) {
 
+        my $token;
         $header =~ s/^\s+//;
 
         if ( length( $header ) == 0 ) {
             last;
         }
         elsif ( $header =~ /^\(/ ) {
-            $token = Mail::AuthenticationResults::Token::Comment->new( $header );
+            $token = Mail::AuthenticationResults::Token::Comment->new( $header, $args );
         }
         elsif ( $header =~ /^;/ ) {
-            $token = Mail::AuthenticationResults::Token::Separator->new( $header );
+            $token = Mail::AuthenticationResults::Token::Separator->new( $header, $args );
+            $args->{ 'last_non_comment_type' } = $token;
         }
         elsif ( $header =~ /^"/ ) {
-            $token = Mail::AuthenticationResults::Token::QuotedString->new( $header );
+            $token = Mail::AuthenticationResults::Token::QuotedString->new( $header, $args );
+            $args->{ 'last_non_comment_type' } = $token;
         }
         elsif ( $header =~ /^\./ ) {
-            $token = Mail::AuthenticationResults::Token::Assignment->new( $header );
+            $token = Mail::AuthenticationResults::Token::Assignment->new( $header, $args );
+            $args->{ 'last_non_comment_type' } = $token;
         }
         elsif ( $header =~ /^\// ) {
-            $token = Mail::AuthenticationResults::Token::Assignment->new( $header );
+            $token = Mail::AuthenticationResults::Token::Assignment->new( $header, $args );
+            $args->{ 'last_non_comment_type' } = $token;
         }
         elsif ( $header =~ /^=/ ) {
-            $token = Mail::AuthenticationResults::Token::Assignment->new( $header );
+            $token = Mail::AuthenticationResults::Token::Assignment->new( $header, $args );
+            $args->{ 'last_non_comment_type' } = $token;
         }
         else {
-            $token = Mail::AuthenticationResults::Token::String->new( $header );
+            $token = Mail::AuthenticationResults::Token::String->new( $header, $args );
+            $args->{ 'last_non_comment_type' } = $token;
         }
 
         $header = $token->remainder();
@@ -113,7 +120,7 @@ sub _parse_authservid {
             $authserv_id->set_value( $token->value() );
             last;
         }
-        elsif ( $token eq 'comment' ) {
+        elsif ( $token->is() eq 'comment' ) {
             $authserv_id->add_child( Mail::AuthenticationResults::Header::Comment->new()->set_value( $token->value() ) );
         }
         else {
@@ -124,6 +131,7 @@ sub _parse_authservid {
 
     my $expecting = 'key';
     my $key;
+
     TOKEN:
     while ( @$tokenised ) {
         $token = shift @$tokenised;
