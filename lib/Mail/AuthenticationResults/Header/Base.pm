@@ -98,14 +98,19 @@ sub add_child {
 
 sub as_string {
     my ( $self ) = @_;
-    my $string = $self->stringify( $self->key() );
+
+    if ( ! $self->key() ) {
+        return q{};
+    }
+
+    my $string .= $self->stringify( $self->key() );
     if ( $self->value() ) {
         $string .= '=' . $self->stringify( $self->value() );
     }
     else {
         # We special case none here
         if ( $self->key() ne 'none' ) {
-             $string .= '=';
+             $string .= '=""';
         }
     }
     if ( $self->HAS_CHILDREN() ) {

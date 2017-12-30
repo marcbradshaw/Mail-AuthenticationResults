@@ -20,9 +20,4 @@ sub ALLOWED_CHILDREN {
     return 0;
 }
 
-sub as_string {
-    my ( $self ) = @_;
-    return $self->SUPER::as_string();
-}
-
 1;

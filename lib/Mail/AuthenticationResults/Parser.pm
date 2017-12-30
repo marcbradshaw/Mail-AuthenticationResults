@@ -102,10 +102,25 @@ sub tokenise {
 sub _parse_authservid {
     my ( $self ) = @_;
     my $tokenised = $self->{ 'tokenised' };
+    my $token;
 
     my $authserv_id = Mail::AuthenticationResults::Header::AuthServID->new();
-    my $token = shift @$tokenised;
-    $authserv_id->set_value( $token->value() );
+
+    # Find the ServID
+    while ( @$tokenised ) {
+        $token = shift @$tokenised;
+        if ( $token->is() eq 'string' ) {
+            $authserv_id->set_value( $token->value() );
+            last;
+        }
+        elsif ( $token eq 'comment' ) {
+            $authserv_id->add_child( Mail::AuthenticationResults::Header::Comment->new()->set_value( $token->value() ) );
+        }
+        else {
+            # assignment or separator, both are bogus
+            croak 'Invalid AuthServ-ID';
+        }
+    }
 
     my $expecting = 'key';
     my $key;

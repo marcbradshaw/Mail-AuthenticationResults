@@ -13,6 +13,10 @@ sub HAS_VALUE{ return 1; }
 sub as_string {
     my ( $self ) = @_;
 
+    if ( ! $self->value() ) {
+        return q{};
+    }
+
     my $string = q{};
 
     if ( ref $self->parent() ne 'Mail::AuthenticationResults::Header::AuthServID' ) {
