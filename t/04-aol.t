@@ -24,4 +24,3 @@ is ( scalar @{$Parsed->search({ 'key'=>'dmarc','value'=>'pass' })->children() },
 
 done_testing();
 
-

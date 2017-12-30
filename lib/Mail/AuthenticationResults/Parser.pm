@@ -203,12 +203,19 @@ sub _parse_entry {
         if ( $token->is() eq 'string' ) {
             if ( $expecting eq 'key' ) {
                 if ( ! $is_subentry ) {
-                    $entry->set_key( $token->value() );
+                    if ( $token->value() eq 'none' ) {
+                        # Special case the none
+                        $expecting = 'no_more_after_none';
+                    }
+                    else {
+                        $entry->set_key( $token->value() );
+                        $expecting = 'assignment';
+                    }
                 }
                 else {
                     $working_on = Mail::AuthenticationResults::Header::SubEntry->new()->set_key( $token->value() );
+                    $expecting = 'assignment';
                 }
-                $expecting = 'assignment';
             }
             elsif ( $expecting eq 'keymod' ) {
                 $working_on->set_key( $working_on->key() . '.' . $token->value() );
@@ -240,6 +247,17 @@ sub _parse_entry {
         }
 
     }
+
+    if ( $expecting eq 'no_more_after_none' ) {
+        $self->{ 'tokenised' } = $tokenised;
+        # We may have comment entries, if so add those to the header object
+        foreach my $child ( @{ $entry->children() } ) {
+            delete $child->{ 'parent' };
+            $self->{ 'header' }->add_child( $child );
+        }
+        return;
+    }
+
     if ( $expecting ne 'key' ) {
         if ( $is_subentry ) {
             $entry->add_child( $working_on );

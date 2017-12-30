@@ -93,11 +93,11 @@ sub test_value_dies_header {
     dies_ok( sub{ $class->set_value() }, ( ref $class ) . ' set null value' );
 
     lives_ok( sub{ $class->set_value( Mail::AuthenticationResults::Header::AuthServID->new()->set_value( 'With space' ) ) }, ( ref $class ) . ' set invalid value spaces' );
-    is( $class->as_string(), '"With space";' . "\n", ( ref $class ) . ' stringifies spaces correfctly' );
+    is( $class->as_string(), '"With space";' . "\nnone", ( ref $class ) . ' stringifies spaces correfctly' );
     lives_ok( sub{ $class->set_value( Mail::AuthenticationResults::Header::AuthServID->new()->set_value( 'pass;' ) ) }, ( ref $class ) . ' set invalid value semicolon' );
-    is( $class->as_string(), '"pass;";' . "\n", ( ref $class ) . ' stringifies semicolon correfctly' );
+    is( $class->as_string(), '"pass;";' . "\nnone", ( ref $class ) . ' stringifies semicolon correfctly' );
     lives_ok( sub{ $class->set_value( Mail::AuthenticationResults::Header::AuthServID->new()->set_value( 'with(parens)' ) ) }, ( ref $class ) . ' set invalid value comment' );
-    is( $class->as_string(), '"with(parens)";' . "\n", ( ref $class ) . ' stringifies parens correfctly' );
+    is( $class->as_string(), '"with(parens)";' . "\nnone", ( ref $class ) . ' stringifies parens correfctly' );
 }
 
 done_testing();

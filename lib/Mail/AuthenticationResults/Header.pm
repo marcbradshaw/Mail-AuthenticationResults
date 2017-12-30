@@ -46,7 +46,21 @@ sub as_string {
     if ( $self->value() ) {
         $value = $self->value()->as_string();
     }
-    return $value . ";\n" . join( ";\n", map { $_->as_string() } @{ $self->children() } );
+    else {
+        $value = 'unknown';
+    }
+    $value .= ";\n";
+
+    $value .= join( ";\n", map { $_->as_string() } @{ $self->children() } );
+
+    if ( scalar @{ $self->search({ 'isa' => 'entry' } )->children() } == 0 ) {
+        if ( scalar @{ $self->children() } > 0 ) {
+            $value .= ' ';
+        }
+        $value .= 'none';
+    }
+
+    return $value;
 }
 
 1;
