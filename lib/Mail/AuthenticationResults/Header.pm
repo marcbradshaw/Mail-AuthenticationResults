@@ -21,7 +21,8 @@ sub ALLOWED_CHILDREN {
 
 sub set_value {
     my ( $self, $value ) = @_;
-    croak 'Does not have value' if ! $self->HAS_VALUE();
+    croak 'Does not have value' if ! $self->HAS_VALUE(); # uncoverable branch true
+    # HAS_VALUE is 1 for this class
     croak 'Value cannot be undefined' if ! defined $value;
     croak 'value should be an AuthServID type' if ref $value ne 'Mail::AuthenticationResults::Header::AuthServID';
     $self->{ 'value' } = $value;

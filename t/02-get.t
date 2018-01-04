@@ -45,6 +45,8 @@ is ( $AuthServID->as_string(), '', 'AuthServID stringifies as expected' );
 sub test_get {
     my ( $class ) = @_;
 
+    is ( $class->stringify(), q{}, 'Null stringifies correctly' );
+
     if ( $class->HAS_KEY() ) {
         is ( $class->key(), q{}, ( ref $class ) . ' key returns empty string' );
     }

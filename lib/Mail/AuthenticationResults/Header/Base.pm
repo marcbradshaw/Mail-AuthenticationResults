@@ -11,7 +11,8 @@ use Mail::AuthenticationResults::Header::Group;
 sub HAS_KEY{ return 0; }
 sub HAS_VALUE{ return 0; }
 sub HAS_CHILDREN{ return 0; }
-sub ALLOWED_CHILDREN{ return 0; } # uncoverable statement
+sub ALLOWED_CHILDREN{ return 0; } # uncoverable subroutine
+# does not run in Base as HAS_CHILDREN returns 0
 
 sub new {
     my ( $class ) = @_;
@@ -73,7 +74,8 @@ sub add_parent {
     my ( $self, $parent ) = @_;
     return if ( ref $parent eq 'Mail::AuthenticationResults::Header::Group' );
     croak 'Child already has a parent' if exists $self->{ 'parent' };
-    croak 'Cannot add parent' if ! $parent->ALLOWED_CHILDREN( $self );
+    croak 'Cannot add parent' if ! $parent->ALLOWED_CHILDREN( $self ); # uncoverable branch true
+    # Does not run as test is also done in add_child before add_parent is called.
     $self->{ 'parent' } = $parent;
     weaken $self->{ 'parent' };
     return;
@@ -88,7 +90,8 @@ sub add_child {
     my ( $self, $child ) = @_;
     croak 'Does not have children' if ! $self->HAS_CHILDREN();
     croak 'Cannot add child' if ! $self->ALLOWED_CHILDREN( $child );
-    croak 'Cannot add a class as its own parent' if refaddr $self == refaddr $child;
+    croak 'Cannot add a class as its own parent' if refaddr $self == refaddr $child; # uncoverable branch true
+    # Does not run as there are no ALLOWED_CHILDREN results which permit this
 
     $child->add_parent( $self );
     push @{ $self->{ 'children' } }, $child;
@@ -113,7 +116,8 @@ sub as_string {
              $string .= '=""';
         }
     }
-    if ( $self->HAS_CHILDREN() ) {
+    if ( $self->HAS_CHILDREN() ) { # uncoverable branch false
+        # There are no classes which run this code without having children
         foreach my $child ( @{$self->children()} ) {
             $string .= ' ' . $child->as_string();
         }
@@ -131,10 +135,12 @@ sub search {
     if ( exists( $search->{ 'key' } ) ) {
         if ( $self->HAS_KEY() ) {
             if ( ref $search->{ 'key' } eq 'Regexp' && $self->key() =~ m/$search->{'key'}/ ) {
-                $match = $match && 1;
+                $match = $match && 1; # uncoverable statement
+                # $match is always 1 at this point, left this way for consistency
             }
             elsif ( lc $search->{ 'key' } eq lc $self->key() ) {
-                $match = $match && 1;
+                $match = $match && 1; # uncoverable statement
+                # $match is always 1 at this point, left this way for consistency
             }
             else {
                 $match = 0;
@@ -159,6 +165,7 @@ sub search {
         }
         else {
             $match = 0; # uncoverable statement
+            # There are no code paths with the current classes which end up here
         }
     }
 
@@ -178,7 +185,7 @@ sub search {
     if ( $self->HAS_CHILDREN() ) {
         foreach my $child ( @{$self->children()} ) {
             my $childfound = $child->search( $search );
-            if ( $childfound ) {
+            if ( scalar @{ $childfound->children() } ) {
                 $group->add_child( $childfound );
             }
         }

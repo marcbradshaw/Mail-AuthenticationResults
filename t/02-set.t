@@ -46,7 +46,12 @@ test_value_dies_version( $Version );
 
 sub test_key_dies {
     my ( $class ) = @_;
-    return unless $class->HAS_KEY();
+
+    if ( ! $class->HAS_KEY() ) {
+        dies_ok( sub{ $class->set_key() }, ( ref $class ) . ' set key' );
+        return;
+    }
+
     $class->set_value( 'test' );
     dies_ok( sub{ $class->set_key() }, ( ref $class ) . ' set null key' );
     dies_ok( sub{ $class->set_key( '' ) }, ( ref $class ) . ' set empty key' );
@@ -62,7 +67,12 @@ sub test_key_dies {
 
 sub test_value_dies {
     my ( $class ) = @_;
-    return unless $class->HAS_VALUE();
+
+    if ( ! $class->HAS_VALUE() ) {
+        dies_ok( sub{ $class->set_value() }, ( ref $class ) . ' set value' );
+        return;
+    }
+
     my $expectkey = q{};
     if ( $class->HAS_KEY() ) {
         $class->set_key( 'test' );
@@ -92,6 +102,8 @@ sub test_value_dies_header {
     my ( $class ) = @_;
     return unless $class->HAS_VALUE();
     dies_ok( sub{ $class->set_value() }, ( ref $class ) . ' set null value' );
+
+    dies_ok( sub{ $class->set_value( 'string' ) }, ( ref $class ) . ' set incorrect type value' );
 
     lives_ok( sub{ $class->set_value( Mail::AuthenticationResults::Header::AuthServID->new()->set_value( 'With space' ) ) }, ( ref $class ) . ' set invalid value spaces' );
     is( $class->as_string(), '"With space";' . "\nnone", ( ref $class ) . ' stringifies spaces correfctly' );
