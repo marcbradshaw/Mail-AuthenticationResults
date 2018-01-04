@@ -38,6 +38,7 @@ my $Output = [
 my $InputARHeader = join( ";\n", 'test.example.com', @$Input );
 
 my $Parser;
+dies_ok( sub{ $Parser = Mail::AuthenticationResults::Parser->new()->parse( '' ) }, 'Parser dies on empty' );
 lives_ok( sub{ $Parser = Mail::AuthenticationResults::Parser->new( $InputARHeader ) }, 'Parser parses' );
 is( ref $Parser, 'Mail::AuthenticationResults::Parser', 'Returns Parser Object' );
 
