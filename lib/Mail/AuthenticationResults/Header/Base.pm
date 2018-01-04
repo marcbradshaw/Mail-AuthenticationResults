@@ -188,4 +188,4 @@ sub search {
 }
 
 1;
-package Mail::AuthenticationResults::Header::Base;
+
