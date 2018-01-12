@@ -28,6 +28,17 @@ sub as_string {
     return $string;
 }
 
+sub safe_set_value {
+    my ( $self, $value ) = @_;
+
+    $value = 1 if ! defined $value;
+    $value =~ s/[^0-9]//g;
+    $value = 1 if $value eq q{};
+
+    $self->set_value( $value );
+    return $self;
+}
+
 sub set_value {
     my ( $self, $value ) = @_;
 

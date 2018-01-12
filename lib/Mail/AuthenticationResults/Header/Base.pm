@@ -37,6 +37,40 @@ sub key {
     return $self->{ 'key' } // q{};
 }
 
+sub _safe_value {
+    my ( $self, $value, $args ) = @_;
+
+    $value = q{} if ! defined $value;
+
+    $value =~ s/\t/ /g;
+    $value =~ s/\n/ /g;
+    $value =~ s/\r/ /g;
+    $value =~ s/\(/ /g;
+    $value =~ s/\)/ /g;
+    $value =~ s/\\/ /g;
+    $value =~ s/"/ /g;
+    $value =~ s/=/ /g;
+
+    $value =~ s/;/ /g if ! exists( $args->{ ';' } );
+
+    $value =~ s/^\s+//;
+    $value =~ s/\s+$//;
+
+    $value =~ s/ /_/g if ! exists ( $args->{ ' ' } );
+
+    return $value;
+}
+
+sub safe_set_value {
+    my ( $self, $value ) = @_;
+
+    $value = $self->_safe_value( $value );
+    $self->set_value( $self->_safe_value( $value, {} ) );
+
+    $self->set_value( $value );
+    return $self;
+}
+
 sub set_value {
     my ( $self, $value ) = @_;
     croak 'Does not have value' if ! $self->HAS_VALUE();

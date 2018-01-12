@@ -19,6 +19,12 @@ sub ALLOWED_CHILDREN {
     return 0;
 }
 
+sub safe_set_value {
+    my ( $self, $value ) = @_;
+    $self->set_value( $value );
+    return $self;
+}
+
 sub set_value {
     my ( $self, $value ) = @_;
     croak 'Does not have value' if ! $self->HAS_VALUE(); # uncoverable branch true
