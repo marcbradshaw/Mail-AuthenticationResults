@@ -1,4 +1,6 @@
 package Mail::AuthenticationResults::Token::QuotedString;
+# ABSTRACT: Class for modelling AuthenticationResults Header parts detected as quoted strings
+
 require 5.010;
 use strict;
 use warnings;

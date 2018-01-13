@@ -1,4 +1,6 @@
 package Mail::AuthenticationResults::Token::Separator;
+# ABSTRACT: Class for modelling AuthenticationResults Header parts detected as quoted separators
+
 require 5.010;
 use strict;
 use warnings;

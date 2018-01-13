@@ -1,4 +1,6 @@
 package Mail::AuthenticationResults;
+# ABSTRACT: Object Oriented Authentication-Results Headers
+
 require 5.010;
 use strict;
 use warnings;
@@ -6,26 +8,6 @@ use warnings;
 use Carp;
 
 use Mail::AuthenticationResults::Parser;
-
-sub new {
-    my ( $class ) = @_;
-    my $self = {};
-    bless $self, $class;
-    return $self;
-}
-
-sub parser {
-    my ( $self, $auth_headers ) = @_;
-    return Mail::AuthenticationResults::Parser->new( $auth_headers );
-}
-
-1;
-
-__END__
-
-=head1 NAME
-
-Mail::AuthenticationResults - Object Oriented Authentication-Results header class
 
 =head1 DESCRIPTION
 
@@ -52,55 +34,36 @@ It is a work in progress..
 
 =for markdown [![CPANTS](https://img.shields.io/badge/cpants-kwalitee-blue.svg)](http://cpants.cpanauthors.org/dist/Mail-AuthenticationResults)
 
-
-=head1 SYNOPSIS
-
-    use Mail::AuthenticationResults;
-
-=head1 CONSTRUCTOR
-
-=over
-
-=item new()
-
-Return a new Mail::AuthenticationResults object
-
-=back
-
-=head1 PUBLIC METHODS
-
-=over
-
-=item parser( $auth_results )
-
-Returns a new Mail::AuthenticationResults::Parser object
-for the supplied $auth_results header
-
-=back
-
-=head1 DEPENDENCIES
-
-  Carp
-  Scalar::Util
-
 =head1 BUGS
 
 Please report bugs via the github tracker.
 
 https://github.com/marcbradshaw/Mail-AuthenticationResults/issues
 
-=head1 AUTHORS
+=method new()
 
-Marc Bradshaw, E<lt>marc@marcbradshaw.netE<gt>
-
-=head1 COPYRIGHT
-
-Copyright (c) 2017, Marc Bradshaw.
-
-=head1 LICENCE
-
-This library is free software; you may redistribute it and/or modify it
-under the same terms as Perl itself.
+Return a new Mail::AuthenticationResults object
 
 =cut
+
+sub new {
+    my ( $class ) = @_;
+    my $self = {};
+    bless $self, $class;
+    return $self;
+}
+
+=method parser()
+
+Returns a new Mail::AuthenticationResults::Parser object
+for the supplied $auth_results header
+
+=cut
+
+sub parser {
+    my ( $self, $auth_headers ) = @_;
+    return Mail::AuthenticationResults::Parser->new( $auth_headers );
+}
+
+1;
 

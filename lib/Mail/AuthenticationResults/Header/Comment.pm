@@ -1,4 +1,6 @@
 package Mail::AuthenticationResults::Header::Comment;
+# ABSTRACT: Class modelling Comment parts of the Authentication Results Header
+
 require 5.010;
 use strict;
 use warnings;

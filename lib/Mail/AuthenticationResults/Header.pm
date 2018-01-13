@@ -1,4 +1,6 @@
 package Mail::AuthenticationResults::Header;
+# ABSTRACT: Class modelling the Entire Authentication Results Header set
+
 require 5.010;
 use strict;
 use warnings;

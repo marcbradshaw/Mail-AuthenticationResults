@@ -1,4 +1,6 @@
 package Mail::AuthenticationResults::Header::Base;
+# ABSTRACT: Base class for modelling parts of the Authentication Results Header
+
 require 5.010;
 use strict;
 use warnings;
@@ -14,12 +16,26 @@ sub HAS_CHILDREN{ return 0; }
 sub ALLOWED_CHILDREN{ return 0; } # uncoverable subroutine
 # does not run in Base as HAS_CHILDREN returns 0
 
+=method new()
+
+Return a new instance of this class
+
+=cut
+
 sub new {
     my ( $class ) = @_;
     my $self = {};
     bless $self, $class;
     return $self;
 }
+
+=method set_key( $key )
+
+Set the key for this instance.
+
+Croaks if $key is invalid.
+
+=cut
 
 sub set_key {
     my ( $self, $key ) = @_;
@@ -30,6 +46,14 @@ sub set_key {
     $self->{ 'key' } = $key;
     return $self;
 }
+
+=method key()
+
+Return the current key for this instance.
+
+Croaks if this instance type can not have a key.
+
+=cut
 
 sub key {
     my ( $self ) = @_;
@@ -61,6 +85,14 @@ sub _safe_value {
     return $value;
 }
 
+=method safe_set_value( $value )
+
+Set the value for this instance.
+
+Munges the value to remove invalid characters before setting.
+
+=cut
+
 sub safe_set_value {
     my ( $self, $value ) = @_;
 
@@ -70,6 +102,14 @@ sub safe_set_value {
     $self->set_value( $value );
     return $self;
 }
+
+=method set_value( $value )
+
+Set the value for this instance.
+
+Croaks if the value contains invalid characters.
+
+=cut
 
 sub set_value {
     my ( $self, $value ) = @_;
@@ -81,11 +121,23 @@ sub set_value {
     return $self;
 }
 
+=method value()
+
+Returns the current value for this instance.
+
+=cut
+
 sub value {
     my ( $self ) = @_;
     croak 'Does not have value' if ! $self->HAS_VALUE();
     return $self->{ 'value' } // q{};
 }
+
+=method stringify( $value )
+
+Returns $value with stringify rules applied.
+
+=cut
 
 sub stringify {
     my ( $self, $value ) = @_;
@@ -98,11 +150,27 @@ sub stringify {
     return $string;
 }
 
+=method children()
+
+Returns a listref of this instances children.
+
+Croaks is this instance type can not have children.
+
+=cut
+
 sub children {
     my ( $self ) = @_;
     croak 'Does not have children' if ! $self->HAS_CHILDREN();
     return $self->{ 'children' } // [];
 }
+
+=method add_parent( $parent )
+
+Sets the parent for this instance to the supplied object.
+
+Croaks is the relationship between $parent and $self is not valid.
+
+=cut
 
 sub add_parent {
     my ( $self, $parent ) = @_;
@@ -115,10 +183,24 @@ sub add_parent {
     return;
 }
 
+=method parent()
+
+Returns the parent object for this instance.
+
+=cut
+
 sub parent {
     my ( $self ) = @_;
     return $self->{ 'parent' };
 }
+
+=method add_child( $child )
+
+Adds $child as a child of this instance.
+
+Croaks is the relationship between $child and $self is not valid.
+
+=cut
 
 sub add_child {
     my ( $self, $child ) = @_;
@@ -132,6 +214,12 @@ sub add_child {
 
     return $child;
 }
+
+=method as_string()
+
+Returns this instance as a string.
+
+=cut
 
 sub as_string {
     my ( $self ) = @_;
@@ -158,6 +246,32 @@ sub as_string {
     }
     return $string;
 }
+
+=method search( $search )
+
+Apply search rules in $search to this instance and return a
+Mail::AuthenticationResults::Header::Group object containing the matches.
+
+$search is a HASHREF with the following possible key/value pairs
+
+=over
+
+=item key
+
+Match if the instance key matches the supplied value (string or regex)
+
+=item value
+
+Match if the instance value matches the supplied value (string or regex)
+
+=item isa
+
+Match is the instance class typs matches the supplied value. This is a lowercase version
+of the class type, (comment,entry,subentry,etc))
+
+=back
+
+=cut
 
 sub search {
     my ( $self, $search ) = @_;

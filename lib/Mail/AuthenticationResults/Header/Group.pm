@@ -1,4 +1,6 @@
 package Mail::AuthenticationResults::Header::Group;
+# ABSTRACT: Class modelling Groups of Authentication Results Header parts
+
 require 5.010;
 use strict;
 use warnings;

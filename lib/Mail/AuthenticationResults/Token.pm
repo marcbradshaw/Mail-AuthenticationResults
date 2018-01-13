@@ -1,4 +1,6 @@
 package Mail::AuthenticationResults::Token;
+# ABSTRACT: Base class for modelling AuthenticationResults Header parts
+
 require 5.010;
 use strict;
 use warnings;

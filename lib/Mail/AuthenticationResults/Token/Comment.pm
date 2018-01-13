@@ -1,4 +1,6 @@
 package Mail::AuthenticationResults::Token::Comment;
+# ABSTRACT: Class for modelling AuthenticationResults Header parts detected as comments
+
 require 5.010;
 use strict;
 use warnings;
