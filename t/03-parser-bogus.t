@@ -12,16 +12,18 @@ use Mail::AuthenticationResults::Parser;
 my $Parsed;
 
 my @GoodStrings = (
-    'text.example.com foo;',
+    'test.example.com foo;',
+    'test.example.com foo ',
+    'test.example.com; foo = ',
 );
 
 my @BadStrings = (
-    'text.example.com = = test;',
-    'text.example.com foo = = bar;',
-    'text.example.com . bar = test;',
-    'text.example.com foo . bar = test;',
-    'text.example.com foo / bar = test;',
-    'text.example.com foo bar = test;',
+    'test.example.com = = test;',
+    'test.example.com foo = = bar;',
+    'test.example.com . bar = test;',
+    'test.example.com foo . bar = test;',
+    'test.example.com foo / bar = test;',
+    'test.example.com foo bar = test;',
     'test.example.com; foo = = bar;',
     'test.example.com; foo / bar = test;',
     'test.example.com; foo . . bar = test;',
