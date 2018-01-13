@@ -10,7 +10,7 @@ use Carp;
 
 use base 'Mail::AuthenticationResults::Header::Base';
 
-sub HAS_VALUE{ return 1; }
+sub _HAS_VALUE{ return 1; }
 
 sub as_string {
     my ( $self ) = @_;
@@ -44,7 +44,7 @@ sub safe_set_value {
 sub set_value {
     my ( $self, $value ) = @_;
 
-    croak 'Does not have value' if ! $self->HAS_VALUE(); # uncoverable branch true
+    croak 'Does not have value' if ! $self->_HAS_VALUE(); # uncoverable branch true
     # HAS_VALUE is 1 for this class
     croak 'Value cannot be undefined' if ! defined $value;
     croak 'Value must be numeric' if $value =~ /[^0-9]/;

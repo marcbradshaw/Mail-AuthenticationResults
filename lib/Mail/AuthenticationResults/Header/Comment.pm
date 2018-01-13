@@ -10,7 +10,7 @@ use Carp;
 
 use base 'Mail::AuthenticationResults::Header::Base';
 
-sub HAS_VALUE{ return 1; }
+sub _HAS_VALUE{ return 1; }
 
 sub safe_set_value {
     my ( $self, $value ) = @_;

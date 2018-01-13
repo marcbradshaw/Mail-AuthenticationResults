@@ -20,6 +20,14 @@ use Mail::AuthenticationResults::Token::QuotedString;
 use Mail::AuthenticationResults::Token::Separator;
 use Mail::AuthenticationResults::Token::String;
 
+=method new( $header )
+
+Return a new Parser instance.
+
+If $header is supplied then parse it and return the parsed object.
+
+=cut
+
 sub new {
     my ( $class, $auth_header ) = @_;
     my $self = {};
@@ -31,6 +39,12 @@ sub new {
 
     return $self;
 }
+
+=method parse( $header )
+
+Parse $header and return the parsed object.
+
+=cut
 
 sub parse {
     my ( $self, $header ) = @_;
@@ -46,6 +60,11 @@ sub parse {
     return $self->parsed();
 }
 
+=method tokenise( $header )
+
+Tokenise the given $header string
+
+=cut
 
 sub tokenise {
     my ( $self, $header ) = @_;
@@ -294,6 +313,12 @@ sub _parse_entry {
 
     return;
 }
+
+=method parsed()
+
+Return the parsed object tree
+
+=cut
 
 sub parsed {
     my ( $self ) = @_;

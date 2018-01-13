@@ -47,14 +47,14 @@ sub test_get {
 
     is ( $class->stringify(), q{}, 'Null stringifies correctly' );
 
-    if ( $class->HAS_KEY() ) {
+    if ( $class->_HAS_KEY() ) {
         is ( $class->key(), q{}, ( ref $class ) . ' key returns empty string' );
     }
     else {
         dies_ok( sub{ $class->key() }, ( ref $class ) . ' key dies' );
     }
 
-    if ( $class->HAS_VALUE() ) {
+    if ( $class->_HAS_VALUE() ) {
         is ( $class->value(), q{}, ( ref $class ) . ' value returns empty string' );
     }
     else {

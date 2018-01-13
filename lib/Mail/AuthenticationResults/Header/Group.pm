@@ -10,9 +10,9 @@ use Carp;
 
 use base 'Mail::AuthenticationResults::Header::Base';
 
-sub HAS_CHILDREN{ return 1; }
+sub _HAS_CHILDREN{ return 1; }
 
-sub ALLOWED_CHILDREN {
+sub _ALLOWED_CHILDREN {
     my ( $self, $child ) = @_;
     return 1 if ref $child eq 'Mail::AuthenticationResults::Header';
     return 1 if ref $child eq 'Mail::AuthenticationResults::Header::AuthServID';
@@ -26,7 +26,7 @@ sub ALLOWED_CHILDREN {
 
 sub add_child {
     my ( $self, $child ) = @_;
-    croak 'Cannot add child' if ! $self->ALLOWED_CHILDREN( $child );
+    croak 'Cannot add child' if ! $self->_ALLOWED_CHILDREN( $child );
     croak 'Cannot add a class as its own parent' if refaddr $self == refaddr $child;
 
     if ( ref $child eq 'Mail::AuthenticationResults::Header::Group' ) {

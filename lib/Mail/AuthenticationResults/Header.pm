@@ -11,10 +11,10 @@ use Mail::AuthenticationResults::Header::AuthServID;
 
 use base 'Mail::AuthenticationResults::Header::Base';
 
-sub HAS_VALUE{ return 1; }
-sub HAS_CHILDREN{ return 1; }
+sub _HAS_VALUE{ return 1; }
+sub _HAS_CHILDREN{ return 1; }
 
-sub ALLOWED_CHILDREN {
+sub _ALLOWED_CHILDREN {
     my ( $self, $child ) = @_;
     return 1 if ref $child eq 'Mail::AuthenticationResults::Header::Comment';
     return 1 if ref $child eq 'Mail::AuthenticationResults::Header::Entry';
@@ -29,7 +29,7 @@ sub safe_set_value {
 
 sub set_value {
     my ( $self, $value ) = @_;
-    croak 'Does not have value' if ! $self->HAS_VALUE(); # uncoverable branch true
+    croak 'Does not have value' if ! $self->_HAS_VALUE(); # uncoverable branch true
     # HAS_VALUE is 1 for this class
     croak 'Value cannot be undefined' if ! defined $value;
     croak 'value should be an AuthServID type' if ref $value ne 'Mail::AuthenticationResults::Header::AuthServID';

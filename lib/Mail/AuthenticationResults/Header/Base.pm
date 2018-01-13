@@ -10,10 +10,10 @@ use Carp;
 
 use Mail::AuthenticationResults::Header::Group;
 
-sub HAS_KEY{ return 0; }
-sub HAS_VALUE{ return 0; }
-sub HAS_CHILDREN{ return 0; }
-sub ALLOWED_CHILDREN{ return 0; } # uncoverable subroutine
+sub _HAS_KEY{ return 0; }
+sub _HAS_VALUE{ return 0; }
+sub _HAS_CHILDREN{ return 0; }
+sub _ALLOWED_CHILDREN{ return 0; } # uncoverable subroutine
 # does not run in Base as HAS_CHILDREN returns 0
 
 =method new()
@@ -39,7 +39,7 @@ Croaks if $key is invalid.
 
 sub set_key {
     my ( $self, $key ) = @_;
-    croak 'Does not have key' if ! $self->HAS_KEY();
+    croak 'Does not have key' if ! $self->_HAS_KEY();
     croak 'Key cannot be undefined' if ! defined $key;
     croak 'Key cannot be empty' if $key eq q{};
     croak 'Invalid characters in key' if $key =~ /"/;
@@ -57,7 +57,7 @@ Croaks if this instance type can not have a key.
 
 sub key {
     my ( $self ) = @_;
-    croak 'Does not have key' if ! $self->HAS_KEY();
+    croak 'Does not have key' if ! $self->_HAS_KEY();
     return $self->{ 'key' } // q{};
 }
 
@@ -113,7 +113,7 @@ Croaks if the value contains invalid characters.
 
 sub set_value {
     my ( $self, $value ) = @_;
-    croak 'Does not have value' if ! $self->HAS_VALUE();
+    croak 'Does not have value' if ! $self->_HAS_VALUE();
     croak 'Value cannot be undefined' if ! defined $value;
     #croak 'Value cannot be empty' if $value eq q{};
     croak 'Invalid characters in value' if $value =~ /"/;
@@ -129,7 +129,7 @@ Returns the current value for this instance.
 
 sub value {
     my ( $self ) = @_;
-    croak 'Does not have value' if ! $self->HAS_VALUE();
+    croak 'Does not have value' if ! $self->_HAS_VALUE();
     return $self->{ 'value' } // q{};
 }
 
@@ -160,7 +160,7 @@ Croaks is this instance type can not have children.
 
 sub children {
     my ( $self ) = @_;
-    croak 'Does not have children' if ! $self->HAS_CHILDREN();
+    croak 'Does not have children' if ! $self->_HAS_CHILDREN();
     return $self->{ 'children' } // [];
 }
 
@@ -176,7 +176,7 @@ sub add_parent {
     my ( $self, $parent ) = @_;
     return if ( ref $parent eq 'Mail::AuthenticationResults::Header::Group' );
     croak 'Child already has a parent' if exists $self->{ 'parent' };
-    croak 'Cannot add parent' if ! $parent->ALLOWED_CHILDREN( $self ); # uncoverable branch true
+    croak 'Cannot add parent' if ! $parent->_ALLOWED_CHILDREN( $self ); # uncoverable branch true
     # Does not run as test is also done in add_child before add_parent is called.
     $self->{ 'parent' } = $parent;
     weaken $self->{ 'parent' };
@@ -204,8 +204,8 @@ Croaks is the relationship between $child and $self is not valid.
 
 sub add_child {
     my ( $self, $child ) = @_;
-    croak 'Does not have children' if ! $self->HAS_CHILDREN();
-    croak 'Cannot add child' if ! $self->ALLOWED_CHILDREN( $child );
+    croak 'Does not have children' if ! $self->_HAS_CHILDREN();
+    croak 'Cannot add child' if ! $self->_ALLOWED_CHILDREN( $child );
     croak 'Cannot add a class as its own parent' if refaddr $self == refaddr $child; # uncoverable branch true
     # Does not run as there are no ALLOWED_CHILDREN results which permit this
 
@@ -238,7 +238,7 @@ sub as_string {
              $string .= '=""';
         }
     }
-    if ( $self->HAS_CHILDREN() ) { # uncoverable branch false
+    if ( $self->_HAS_CHILDREN() ) { # uncoverable branch false
         # There are no classes which run this code without having children
         foreach my $child ( @{$self->children()} ) {
             $string .= ' ' . $child->as_string();
@@ -281,7 +281,7 @@ sub search {
     my $match = 1;
 
     if ( exists( $search->{ 'key' } ) ) {
-        if ( $self->HAS_KEY() ) {
+        if ( $self->_HAS_KEY() ) {
             if ( ref $search->{ 'key' } eq 'Regexp' && $self->key() =~ m/$search->{'key'}/ ) {
                 $match = $match && 1; # uncoverable statement
                 # $match is always 1 at this point, left this way for consistency
@@ -300,7 +300,7 @@ sub search {
     }
 
     if ( exists( $search->{ 'value' } ) ) {
-        if ( $self->HAS_VALUE() ) {
+        if ( $self->_HAS_VALUE() ) {
             if ( ref $search->{ 'value' } eq 'Regexp' && $self->value() =~ m/$search->{'value'}/ ) {
                 $match = $match && 1;
             }
@@ -330,7 +330,7 @@ sub search {
         $group->add_child( $self );
     }
 
-    if ( $self->HAS_CHILDREN() ) {
+    if ( $self->_HAS_CHILDREN() ) {
         foreach my $child ( @{$self->children()} ) {
             my $childfound = $child->search( $search );
             if ( scalar @{ $childfound->children() } ) {
