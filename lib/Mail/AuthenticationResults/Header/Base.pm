@@ -13,8 +13,10 @@ use Mail::AuthenticationResults::Header::Group;
 sub _HAS_KEY{ return 0; }
 sub _HAS_VALUE{ return 0; }
 sub _HAS_CHILDREN{ return 0; }
-sub _ALLOWED_CHILDREN{ return 0; } # uncoverable subroutine
-# does not run in Base as HAS_CHILDREN returns 0
+sub _ALLOWED_CHILDREN{ # uncoverable subroutine
+    # does not run in Base as HAS_CHILDREN returns 0
+    return 0; # uncoverable statement
+}
 
 =method new()
 

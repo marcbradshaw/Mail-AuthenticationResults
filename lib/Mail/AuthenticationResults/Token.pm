@@ -68,8 +68,8 @@ Return the type of token we are.
 
 sub is { # uncoverable subroutine
     # a base Token cannot be instantiated, and all subclasses should implement this method.
-    my ( $self ) = @_;
-    croak 'is not implemented';
+    my ( $self ) = @_; # uncoverable statement
+    croak 'is not implemented'; # uncoverable statement
 }
 
 1;;
