@@ -66,7 +66,8 @@ Return the type of token we are.
 
 =cut
 
-sub is {
+sub is { # uncoverable subroutine
+    # a base Token cannot be instantiated, and all subclasses should implement this method.
     my ( $self ) = @_;
     croak 'is not implemented';
 }
