@@ -9,6 +9,12 @@ use Carp;
 
 use base 'Mail::AuthenticationResults::Token';
 
+=head1 DESCRIPTION
+
+Token representing a quoted string
+
+=cut
+
 sub is {
     my ( $self ) = @_;
     return 'string';

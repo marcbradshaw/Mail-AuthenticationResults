@@ -10,6 +10,43 @@ use Carp;
 
 use Mail::AuthenticationResults::Header::Group;
 
+=head1 DESCRIPTION
+
+Set of classes representing the various parts and sub parts of Authentication Results Headers.
+
+L<Mail::AuthenticationResults::Header> represents a complete Authentication Results Header set
+L<Mail::AuthenticationResults::Header::AuthServID> represents the AuthServID part of the set
+L<Mail::AuthenticationResults::Header::Comment> represents a comment
+L<Mail::AuthenticationResults::Header::Entry> represents a main entry
+L<Mail::AuthenticationResults::Header::Group> represents a group of parts, typically as a search result
+L<Mail::AuthenticationResults::Header::SubEntry> represents a sub entry part
+L<Mail::AuthenticationResults::Header::Version> represents a version part
+
+Header
+    AuthServID
+        Version
+        Comment
+        SubEntry
+    Entry
+        Comment
+    Entry
+        Comment
+        SubEntry
+            Comment
+    Entry
+        SubEntry
+        SubEntry
+
+Group
+    Entry
+        Comment
+    SubEntry
+        Comment
+    Entry
+        SubEntry
+
+=cut
+
 sub _HAS_KEY{ return 0; }
 sub _HAS_VALUE{ return 0; }
 sub _HAS_CHILDREN{ return 0; }

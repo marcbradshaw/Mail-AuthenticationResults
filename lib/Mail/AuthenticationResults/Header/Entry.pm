@@ -10,6 +10,16 @@ use Carp;
 
 use base 'Mail::AuthenticationResults::Header::Base';
 
+=head1 DESCRIPTION
+
+Entries are the main result of an Authentication Resutls check, an example of this
+would be "dkim=pass" or "dmarc=fail", there may be additional comments of sub entries
+associated with this entry, these are represented as children of this class.
+
+Please see L<Mail::AuthenticationResults::Header::Base>
+
+=cut
+
 sub _HAS_KEY{ return 1; }
 sub _HAS_VALUE{ return 1; }
 sub _HAS_CHILDREN{ return 1; }

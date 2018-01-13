@@ -9,6 +9,21 @@ use Carp;
 
 use base 'Mail::AuthenticationResults::Header::Base';
 
+=head1 DESCRIPTION
+
+The AuthServID is typically the first section of an Authentication Results Header, it records
+the server responsible for performing the Authentication Results checks, and can additionally hold
+a version number (assumed to be 1 if not present).
+
+Some providers also add additional sub entries to the field, hence this class is capable of
+being a parent to version, comment, and sub entry types.
+
+This class is set as the value for a Mail::AuthenticationResults::Header class.
+
+Please see L<Mail::AuthenticationResults::Header::Base>
+
+=cut
+
 sub _HAS_VALUE{ return 1; }
 
 sub _HAS_CHILDREN{ return 1; }
