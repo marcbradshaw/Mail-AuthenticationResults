@@ -11,6 +11,14 @@ use Mail::AuthenticationResults::Header::AuthServID;
 
 use base 'Mail::AuthenticationResults::Header::Base';
 
+=head1 DESCRIPTION
+
+This class represents the main Authentication Results set
+
+Please see L<Mail::AuthenticationResults::Header::Base>
+
+=cut
+
 sub _HAS_VALUE{ return 1; }
 sub _HAS_CHILDREN{ return 1; }
 

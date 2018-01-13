@@ -9,6 +9,17 @@ use Carp;
 
 use base 'Mail::AuthenticationResults::Header::Base';
 
+=head1 DESCRIPTION
+
+A sub entry is a result which relates to a main entry class, for example if the
+main entry is "dkim=pass" then the sub entry may be "domain.d=example.com"
+
+There may be comments associated with the subentry as children.
+
+Please see L<Mail::AuthenticationResults::Header::Base>
+
+=cut
+
 sub _HAS_KEY{ return 1; }
 sub _HAS_VALUE{ return 1; }
 sub _HAS_CHILDREN{ return 1; }

@@ -7,11 +7,21 @@ use warnings;
 # VERSION
 use Carp;
 
+=head1 DESCRIPTION
+
+Classes representing a tokenised Authentication Results Header, used in parsing
+
 =method new( $header, $args )
 
 Return a new Token object parsed from the given $header string using $args
 
-$args value depend on the subclass of Token used
+$args value depend on the subclass of Token used, possible types are
+
+L<Mail::AuthenticationResults::Token::Assignment> an assignment operator
+L<Mail::AuthenticationResults::Token::Comment> a comment
+L<Mail::AuthenticationResults::Token::QuotedString> a quoted string
+L<Mail::AuthenticationResults::Token::Separator> a separator
+L<Mail::AuthenticationResults::Token::String> a string
 
 =cut
 

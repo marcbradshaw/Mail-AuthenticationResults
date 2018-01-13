@@ -10,6 +10,15 @@ use Carp;
 
 use base 'Mail::AuthenticationResults::Header::Base';
 
+=head1 DESCRIPTION
+
+A group of classes, typically returned as a search results set, and should include
+all required parts.
+
+Please see L<Mail::AuthenticationResults::Header::Base>
+
+=cut
+
 sub _HAS_CHILDREN{ return 1; }
 
 sub _ALLOWED_CHILDREN {

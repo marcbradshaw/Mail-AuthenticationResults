@@ -10,6 +10,14 @@ use Carp;
 
 use base 'Mail::AuthenticationResults::Header::Base';
 
+=head1 DESCRIPTION
+
+A version string, this may be associated with an AuthServID, Entry, Group, or SubEntry.
+
+Please see L<Mail::AuthenticationResults::Header::Base>
+
+=cut
+
 sub _HAS_VALUE{ return 1; }
 
 sub as_string {

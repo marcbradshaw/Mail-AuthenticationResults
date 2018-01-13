@@ -10,6 +10,15 @@ use Carp;
 
 use base 'Mail::AuthenticationResults::Header::Base';
 
+=head1 DESCRIPTION
+
+Comments may be associated with many parts of the Authentication Results set, this
+class represents a comment.
+
+Please see L<Mail::AuthenticationResults::Header::Base>
+
+=cut
+
 sub _HAS_VALUE{ return 1; }
 
 sub safe_set_value {

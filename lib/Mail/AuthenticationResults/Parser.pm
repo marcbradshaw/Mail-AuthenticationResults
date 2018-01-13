@@ -20,6 +20,12 @@ use Mail::AuthenticationResults::Token::QuotedString;
 use Mail::AuthenticationResults::Token::Separator;
 use Mail::AuthenticationResults::Token::String;
 
+=head1 DESCRIPTION
+
+Class for parsing Authentication Results headers into objects.
+
+takes a string and returns a L<Mail::AuthenticationResults::Header> object
+
 =method new( $header )
 
 Return a new Parser instance.
