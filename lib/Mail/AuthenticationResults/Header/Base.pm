@@ -124,7 +124,7 @@ sub safe_set_value {
     $value =~ s/^\s+//;
     $value =~ s/\s+$//;
 
-    $value =~ s/ /_/g;
+    #$value =~ s/ /_/g;
 
     $self->set_value( $value );
     return $self;
