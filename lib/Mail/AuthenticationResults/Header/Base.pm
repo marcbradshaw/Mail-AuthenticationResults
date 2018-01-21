@@ -103,23 +103,6 @@ sub key {
 sub _safe_value {
     my ( $self, $value, $args ) = @_;
 
-    $value = q{} if ! defined $value;
-
-    $value =~ s/\t/ /g;
-    $value =~ s/\n/ /g;
-    $value =~ s/\r/ /g;
-    $value =~ s/\(/ /g;
-    $value =~ s/\)/ /g;
-    $value =~ s/\\/ /g;
-    $value =~ s/"/ /g;
-    $value =~ s/=/ /g if ! exists( $args->{ '=' } );;
-
-    $value =~ s/;/ /g if ! exists( $args->{ ';' } );
-
-    $value =~ s/^\s+//;
-    $value =~ s/\s+$//;
-
-    $value =~ s/ /_/g if ! exists ( $args->{ ' ' } );
 
     return $value;
 }
@@ -135,8 +118,21 @@ Munges the value to remove invalid characters before setting.
 sub safe_set_value {
     my ( $self, $value ) = @_;
 
-    $value = $self->_safe_value( $value );
-    $self->set_value( $self->_safe_value( $value, {} ) );
+    $value = q{} if ! defined $value;
+
+    $value =~ s/\t/ /g;
+    $value =~ s/\n/ /g;
+    $value =~ s/\r/ /g;
+    $value =~ s/\(/ /g;
+    $value =~ s/\)/ /g;
+    $value =~ s/\\/ /g;
+    $value =~ s/"/ /g;
+    $value =~ s/=/ /g;
+    $value =~ s/;/ /g;
+    $value =~ s/^\s+//;
+    $value =~ s/\s+$//;
+
+    $value =~ s/ /_/g;
 
     $self->set_value( $value );
     return $self;
@@ -156,6 +152,8 @@ sub set_value {
     croak 'Value cannot be undefined' if ! defined $value;
     #croak 'Value cannot be empty' if $value eq q{};
     croak 'Invalid characters in value' if $value =~ /"/;
+    croak 'Invalid characters in value' if $value =~ /\n/;
+    croak 'Invalid characters in value' if $value =~ /\r/;
     $self->{ 'value' } = $value;
     return $self;
 }
@@ -182,7 +180,7 @@ sub stringify {
     my ( $self, $value ) = @_;
     my $string = $value // q{};
 
-    if ( $string =~ /[\s\t \(\);]/ ) {
+    if ( $string =~ /[\s\t \(\);=]/ ) {
         $string = '"' . $string . '"';
     }
 

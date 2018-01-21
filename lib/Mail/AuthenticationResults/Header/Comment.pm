@@ -23,7 +23,19 @@ sub _HAS_VALUE{ return 1; }
 
 sub safe_set_value {
     my ( $self, $value ) = @_;
-    $self->set_value( $self->_safe_value( $value, { ' ' => 1, '=' => 1, } ) );
+
+    $value = q{} if ! defined $value;
+
+    $value =~ s/\t/ /g;
+    $value =~ s/\n/ /g;
+    $value =~ s/\r/ /g;
+    $value =~ s/\(/ /g;
+    $value =~ s/\)/ /g;
+    #$value =~ s/;/ /g;
+    $value =~ s/^\s+//;
+    $value =~ s/\s+$//;
+
+    $self->set_value( $value );
     return $self;
 }
 
@@ -37,7 +49,7 @@ sub set_value {
         $remain   = substr( $remain,1 );
         $depth++ if $first eq '(';
         $depth-- if $first eq ')';
-        croak 'Out of order parent in comment' if $depth == -1;
+        croak 'Out of order parens in comment' if $depth == -1;
     }
     croak 'Mismatched parens in comment' if $depth != 0;
 
