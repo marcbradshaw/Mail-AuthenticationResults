@@ -112,7 +112,7 @@ sub _safe_value {
     $value =~ s/\)/ /g;
     $value =~ s/\\/ /g;
     $value =~ s/"/ /g;
-    $value =~ s/=/ /g;
+    $value =~ s/=/ /g if ! exists( $args->{ '=' } );;
 
     $value =~ s/;/ /g if ! exists( $args->{ ';' } );
 

@@ -23,7 +23,7 @@ sub _HAS_VALUE{ return 1; }
 
 sub safe_set_value {
     my ( $self, $value ) = @_;
-    $self->set_value( $self->_safe_value( $value, { ' ' => 1, } ) );
+    $self->set_value( $self->_safe_value( $value, { ' ' => 1, '=' => 1, } ) );
     return $self;
 }
 
