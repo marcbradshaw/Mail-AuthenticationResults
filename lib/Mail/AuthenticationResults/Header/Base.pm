@@ -252,6 +252,59 @@ sub add_child {
     return $child;
 }
 
+=method ancestor()
+
+Returns the top Header object and depth of this child
+
+=cut
+
+sub ancestor {
+    my ( $self ) = @_;
+
+    my $depth = 0;
+    my $ancestor = $self->parent();
+    my $eldest = $self;
+    while ( defined $ancestor ) {
+        $eldest = $ancestor;
+        $ancestor = $ancestor->parent();
+        $depth++;
+    }
+
+    return ( $eldest, $depth );
+}
+
+=method as_string_prefix()
+
+Return the prefix to as_string for this object when calledas a child
+of another objects as_string method call.
+
+=cut
+
+sub as_string_prefix {
+    my ( $self ) = @_;
+
+    my ( $eldest, $depth ) = $self->ancestor();
+
+    my $indents = 1;
+    if ( $eldest->can( 'indent_by' ) ) {
+        $indents = $eldest->indent_by();
+    }
+
+    my $eol = "\n";
+    if ( $eldest->can( 'eol' ) ) {
+        $eol = $eldest->eol();
+    }
+
+    my $indent = ' ';
+    if ( $eldest->can( 'indent_on' ) ) {
+        if ( $eldest->indent_on( ref $self ) ) {
+            $indent = $eol . ' ' x ( $indents * $depth );
+        }
+    }
+
+    return $indent;
+}
+
 =method as_string()
 
 Returns this instance as a string.
@@ -265,7 +318,7 @@ sub as_string {
         return q{};
     }
 
-    my $string .= $self->stringify( $self->key() );
+    my $string = $self->stringify( $self->key() );
     if ( $self->value() ) {
         $string .= '=' . $self->stringify( $self->value() );
     }
@@ -278,7 +331,8 @@ sub as_string {
     if ( $self->_HAS_CHILDREN() ) { # uncoverable branch false
         # There are no classes which run this code without having children
         foreach my $child ( @{$self->children()} ) {
-            $string .= ' ' . $child->as_string();
+            $string .= $child->as_string_prefix();
+            $string .= $child->as_string();
         }
     }
     return $string;
