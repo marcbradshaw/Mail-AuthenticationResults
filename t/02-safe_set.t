@@ -59,11 +59,11 @@ sub test_value_dies {
     }
 
     lives_ok( sub{ $class->safe_set_value( 'With space' ) }, ( ref $class ) . ' set invalid value spaces' );
-    is( $class->as_string(), $expectkey . 'With_space', ( ref $class ) . ' stringifies spaces correctly' );
+    is( $class->as_string(), $expectkey . '"With space"', ( ref $class ) . ' stringifies spaces correctly' );
     lives_ok( sub{ $class->safe_set_value( 'pass;' ) }, ( ref $class ) . ' set invalid value semicolon' );
     is( $class->as_string(), $expectkey . 'pass', ( ref $class ) . ' stringifies semicolon correctly' );
     lives_ok( sub{ $class->safe_set_value( 'with(parens)' ) }, ( ref $class ) . ' set invalid value comment' );
-    is( $class->as_string(), $expectkey . 'with_parens', ( ref $class ) . ' stringifies parens correctly' );
+    is( $class->as_string(), $expectkey . '"with parens"', ( ref $class ) . ' stringifies parens correctly' );
 }
 
 sub test_value_dies_version {

@@ -100,13 +100,6 @@ sub key {
     return $self->{ 'key' } // q{};
 }
 
-sub _safe_value {
-    my ( $self, $value, $args ) = @_;
-
-
-    return $value;
-}
-
 =method safe_set_value( $value )
 
 Set the value for this instance.
@@ -127,12 +120,11 @@ sub safe_set_value {
     $value =~ s/\)/ /g;
     $value =~ s/\\/ /g;
     $value =~ s/"/ /g;
-    $value =~ s/=/ /g;
     $value =~ s/;/ /g;
     $value =~ s/^\s+//;
     $value =~ s/\s+$//;
 
-    $value =~ s/ /_/g;
+    #$value =~ s/ /_/g;
 
     $self->set_value( $value );
     return $self;
