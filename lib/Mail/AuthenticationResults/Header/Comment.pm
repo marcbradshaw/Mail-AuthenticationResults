@@ -52,6 +52,8 @@ sub set_value {
         croak 'Out of order parens in comment' if $depth == -1;
     }
     croak 'Mismatched parens in comment' if $depth != 0;
+    croak 'Invalid characters in value' if $value =~ /\n/;
+    croak 'Invalid characters in value' if $value =~ /\r/;
 
     $self->{ 'value' } = $value;
     return $self;
