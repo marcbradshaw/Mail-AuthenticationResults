@@ -82,6 +82,8 @@ sub set_key {
     croak 'Key cannot be undefined' if ! defined $key;
     croak 'Key cannot be empty' if $key eq q{};
     croak 'Invalid characters in key' if $key =~ /"/;
+    croak 'Invalid characters in key' if $key =~ /\n/;
+    croak 'Invalid characters in key' if $key =~ /\r/;
     $self->{ 'key' } = $key;
     return $self;
 }

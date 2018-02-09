@@ -56,6 +56,8 @@ sub test_key_dies {
     dies_ok( sub{ $class->set_key() }, ( ref $class ) . ' set null key' );
     dies_ok( sub{ $class->set_key( '' ) }, ( ref $class ) . ' set empty key' );
     dies_ok( sub{ $class->set_key( '"' ) }, ( ref $class ) . ' set invalid " key' );
+    dies_ok( sub{ $class->set_key( "with\nnewline" ) }, ( ref $class ) . ' set invalid newline key' );
+    dies_ok( sub{ $class->set_key( "with\rreturn" ) }, ( ref $class ) . ' set invalid return key' );
 
     lives_ok( sub{ $class->set_key( 'test key!' ) }, ( ref $class ) . ' set key spaces' );
     is( $class->as_string(), '"test key!"=test', ( ref $class ) . ' stringifies spaces correctly' );
