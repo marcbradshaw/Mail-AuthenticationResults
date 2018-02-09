@@ -51,6 +51,7 @@ is ( $ParsedCommentFirst->as_string(), "test.example.com (comment first); none",
 my $ParsedPostAssign;
 lives_ok( sub{ $ParsedPostAssign = Mail::AuthenticationResults::Parser->new()->parse( 'example.com; dkim=pass address=thisisa=test@example.com') }, 'Post Assign parse lives' );
 is( $ParsedPostAssign->children()->[0]->children->[0]->value(), 'thisisa=test@example.com', 'Post assign value correct' );
+is( $ParsedPostAssign->children()->[0]->children->[0]->as_string(), 'address="thisisa=test@example.com"', 'Post assign stringify correct' );
 
 dies_ok( sub{ Mail::AuthenticationResults::Parser->new()->parse( ';none' ) }, 'Missing AuthServ-ID dies' );
 
