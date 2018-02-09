@@ -64,6 +64,10 @@ sub test_value_dies {
     is( $class->as_string(), $expectkey . 'pass', ( ref $class ) . ' stringifies semicolon correctly' );
     lives_ok( sub{ $class->safe_set_value( 'with(parens)' ) }, ( ref $class ) . ' set invalid value comment' );
     is( $class->as_string(), $expectkey . '"with parens"', ( ref $class ) . ' stringifies parens correctly' );
+    lives_ok( sub{ $class->safe_set_value( "With\nnewline" ) }, ( ref $class ) . ' set invalid value newline' );
+    is( $class->as_string(), $expectkey . '"With newline"', ( ref $class ) . ' stringifies newline correctly' );
+    lives_ok( sub{ $class->safe_set_value( "With\rreturn" ) }, ( ref $class ) . ' set invalid value return' );
+    is( $class->as_string(), $expectkey . '"With return"', ( ref $class ) . ' stringifies return correctly' );
 }
 
 sub test_value_dies_version {

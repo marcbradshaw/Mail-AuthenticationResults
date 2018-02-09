@@ -81,6 +81,9 @@ sub test_value_dies {
         $expectkey = 'test=';
     }
     dies_ok( sub{ $class->set_value() }, ( ref $class ) . ' set null value' );
+    dies_ok( sub{ $class->set_value( 'has"quote') }, ( ref $class ) . ' set quote value value' );
+    dies_ok( sub{ $class->set_value( "with\nnewline" ) }, ( ref $class ) . ' set newline value' );
+    dies_ok( sub{ $class->set_value( "with\return" ) }, ( ref $class ) . ' set return value' );
 
     lives_ok( sub{ $class->set_value( 'With space' ) }, ( ref $class ) . ' set invalid value spaces' );
     is( $class->as_string(), $expectkey . '"With space"', ( ref $class ) . ' stringifies spaces correctly' );
