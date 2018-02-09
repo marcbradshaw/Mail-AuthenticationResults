@@ -108,6 +108,9 @@ Set the value for this instance.
 
 Munges the value to remove invalid characters before setting.
 
+This method also removes some value characters when their inclusion
+would be likely to break simple parsers.
+
 =cut
 
 sub safe_set_value {
