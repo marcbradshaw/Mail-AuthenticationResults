@@ -80,10 +80,10 @@ my $Full = 'test.example.com;
         header.from=example.com';
 
 
-is( $Parsed->set_indent_style( 'none' )->as_string(), $None, 'None stringifies correftly' );
-is( $Parsed->set_indent_style( 'entry' )->as_string(), $Entry, 'Entry stringifies correftly' );
-is( $Parsed->set_indent_style( 'subentry' )->as_string(), $SubEntry, 'SubEntry stringifies correftly' );
-is( $Parsed->set_indent_style( 'full' )->as_string(), $Full, 'Full stringifies correftly' );
+is( $Parsed->set_indent_style( 'none' )->as_string(), $None, 'None stringifies correctly' );
+is( $Parsed->set_indent_style( 'entry' )->as_string(), $Entry, 'Entry stringifies correctly' );
+is( $Parsed->set_indent_style( 'subentry' )->as_string(), $SubEntry, 'SubEntry stringifies correctly' );
+is( $Parsed->set_indent_style( 'full' )->as_string(), $Full, 'Full stringifies correctly' );
 dies_ok( sub{ $Parsed->set_indent_style( 'bogus_indent_style' ); }, 'invalid style dies' );
 
 done_testing();

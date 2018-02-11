@@ -104,7 +104,12 @@ Set the eol style for as_string
 
 sub set_eol {
     my ( $self, $eol ) = @_;
-    $self->{ 'eol' } = $eol;
+    if ( $eol =~ /^\r?\n$/ ) {
+        $self->{ 'eol' } = $eol;
+    }
+    else {
+        croak 'Invalid eol string';
+    }
     return $self;
 }
 
