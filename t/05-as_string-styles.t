@@ -84,6 +84,7 @@ is( $Parsed->set_indent_style( 'none' )->as_string(), $None, 'None stringifies c
 is( $Parsed->set_indent_style( 'entry' )->as_string(), $Entry, 'Entry stringifies correftly' );
 is( $Parsed->set_indent_style( 'subentry' )->as_string(), $SubEntry, 'SubEntry stringifies correftly' );
 is( $Parsed->set_indent_style( 'full' )->as_string(), $Full, 'Full stringifies correftly' );
+dies_ok( sub{ $Parsed->set_indent_style( 'bogus_indent_style' ); }, 'invalid style dies' );
 
 done_testing();
 
