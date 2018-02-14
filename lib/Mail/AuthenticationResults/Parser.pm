@@ -1,7 +1,7 @@
 package Mail::AuthenticationResults::Parser;
 # ABSTRACT: Class for parsing Authentication Results Headers
 
-require 5.010;
+require 5.008;
 use strict;
 use warnings;
 # VERSION

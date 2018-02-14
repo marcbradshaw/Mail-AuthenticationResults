@@ -1,7 +1,7 @@
 package Mail::AuthenticationResults::Header::Base;
 # ABSTRACT: Base class for modelling parts of the Authentication Results Header
 
-require 5.010;
+require 5.008;
 use strict;
 use warnings;
 # VERSION
@@ -99,7 +99,8 @@ Croaks if this instance type can not have a key.
 sub key {
     my ( $self ) = @_;
     croak 'Does not have key' if ! $self->_HAS_KEY();
-    return $self->{ 'key' } // q{};
+    return q{} if ! defined $self->{ 'key' }; #5.8
+    return $self->{ 'key' };
 }
 
 =method safe_set_value( $value )
@@ -164,7 +165,8 @@ Returns the current value for this instance.
 sub value {
     my ( $self ) = @_;
     croak 'Does not have value' if ! $self->_HAS_VALUE();
-    return $self->{ 'value' } // q{};
+    return q{} if ! defined $self->{ 'value' }; # 5.8
+    return $self->{ 'value' };
 }
 
 =method stringify( $value )
@@ -175,7 +177,8 @@ Returns $value with stringify rules applied.
 
 sub stringify {
     my ( $self, $value ) = @_;
-    my $string = $value // q{};
+    my $string = $value;
+    $string = q{} if ! defined $string; #5.8;
 
     if ( $string =~ /[\s\t \(\);=]/ ) {
         $string = '"' . $string . '"';
@@ -195,7 +198,8 @@ Croaks is this instance type can not have children.
 sub children {
     my ( $self ) = @_;
     croak 'Does not have children' if ! $self->_HAS_CHILDREN();
-    return $self->{ 'children' } // [];
+    return [] if ! defined $self->{ 'children' }; #5.8
+    return $self->{ 'children' };
 }
 
 =method add_parent( $parent )

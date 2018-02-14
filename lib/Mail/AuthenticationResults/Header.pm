@@ -1,7 +1,7 @@
 package Mail::AuthenticationResults::Header;
 # ABSTRACT: Class modelling the Entire Authentication Results Header set
 
-require 5.010;
+require 5.008;
 use strict;
 use warnings;
 # VERSION
@@ -49,7 +49,8 @@ Return the number of spaces for as_string() to indent by
 
 sub indent_by {
     my ( $self ) = @_;
-    return $self->{ 'indent_by'} // 4;
+    return 4 if ! defined $self->{ 'indent_by' }; #5.8
+    return $self->{ 'indent_by'};
 }
 
 =method set_indent_on( $class )
@@ -85,13 +86,16 @@ Should the given class be indented
 sub indent_on {
     my ( $self, $type ) = @_;
     if ( $type eq 'Mail::AuthenticationResults::Header::Entry' ) {
-        return $self->{ 'indent_type_' . $type } // 1;
+        return 1 if ! defined $self->{ 'indent_type_' . $type }; #5.8
+        return $self->{ 'indent_type_' . $type };
     }
     if ( $type eq 'Mail::AuthenticationResults::Header::SubEntry' ) {
-        return $self->{ 'indent_type_' . $type } // 0;
+        return 0 if ! defined $self->{ 'indent_type_' . $type }; #5.8
+        return $self->{ 'indent_type_' . $type };
     }
     elsif ( $type eq 'Mail::AuthenticationResults::Header::Comment' ) {
-        return $self->{ 'indent_type_' . $type } // 0;
+        return 0 if ! defined $self->{ 'indent_type_' . $type }; #5.8
+        return $self->{ 'indent_type_' . $type };
     }
     return 0;
 }
@@ -121,7 +125,8 @@ Return the current eol style
 
 sub eol {
     my ( $self ) = @_;
-    return $self->{ 'eol' } // "\n";
+    return "\n" if ! defined $self->{ 'eol' }; #5.8
+    return $self->{ 'eol' };
 }
 
 =method set_indent_style( $style )

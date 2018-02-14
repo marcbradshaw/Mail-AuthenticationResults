@@ -1,7 +1,7 @@
 package Mail::AuthenticationResults;
 # ABSTRACT: Object Oriented Authentication-Results Headers
 
-require 5.010;
+require 5.008;
 use strict;
 use warnings;
 # VERSION

@@ -1,7 +1,7 @@
 package Mail::AuthenticationResults::Header::Entry;
 # ABSTRACT: Class modelling Main Entry parts of the Authentication Results Header
 
-require 5.010;
+require 5.008;
 use strict;
 use warnings;
 # VERSION

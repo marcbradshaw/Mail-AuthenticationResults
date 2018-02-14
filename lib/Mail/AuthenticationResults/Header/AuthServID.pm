@@ -1,7 +1,7 @@
 package Mail::AuthenticationResults::Header::AuthServID;
 # ABSTRACT: Class modelling the AuthServID part of the Authentication Results Headerr
 
-require 5.010;
+require 5.008;
 use strict;
 use warnings;
 # VERSION

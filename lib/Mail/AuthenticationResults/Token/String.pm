@@ -1,7 +1,7 @@
 package Mail::AuthenticationResults::Token::String;
 # ABSTRACT: Class for modelling AuthenticationResults Header parts detected as strings
 
-require 5.010;
+require 5.008;
 use strict;
 use warnings;
 # VERSION
