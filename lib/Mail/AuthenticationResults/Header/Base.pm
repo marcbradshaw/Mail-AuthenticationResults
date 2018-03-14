@@ -191,7 +191,7 @@ sub stringify {
 
 Returns a listref of this instances children.
 
-Croaks is this instance type can not have children.
+Croaks if this instance type can not have children.
 
 =cut
 
@@ -202,11 +202,26 @@ sub children {
     return $self->{ 'children' };
 }
 
+=method orphan()
+
+Removes the parent for this instance.
+
+Croaks if this instance does not have a parent.
+
+=cut
+
+sub orphan {
+    my ( $self, $parent ) = @_;
+    croak 'Child does not have a parent' if ! exists $self->{ 'parent' };
+    delete $self->{ 'parent' };
+    return;
+}
+
 =method add_parent( $parent )
 
 Sets the parent for this instance to the supplied object.
 
-Croaks is the relationship between $parent and $self is not valid.
+Croaks if the relationship between $parent and $self is not valid.
 
 =cut
 
@@ -232,11 +247,48 @@ sub parent {
     return $self->{ 'parent' };
 }
 
+=method remove_child( $child )
+
+Removes $child as a child of this instance.
+
+Croaks if the relationship between $child and $self is not valid.
+
+=cut
+
+sub remove_child {
+    my ( $self, $child ) = @_;
+    croak 'Does not have children' if ! $self->_HAS_CHILDREN();
+    croak 'Cannot add child' if ! $self->_ALLOWED_CHILDREN( $child );
+    croak 'Cannot add a class as its own parent' if refaddr $self == refaddr $child; # uncoverable branch true
+    # Does not run as there are no ALLOWED_CHILDREN results which permit this
+
+    my @children;
+    my $child_removed = 0;
+    foreach my $mychild ( @{ $self->{ 'children' } } ) {
+        if ( refaddr $child == refaddr $mychild ) {
+            if ( ref $self ne 'Mail::AuthenticationResults::Header::Group' ) {
+                $child->orphan();
+            }
+            $child_removed = 1;
+        }
+        else {
+            push @children, $mychild;
+        }
+    }
+    my $children = $self->{ 'children' };
+
+    croak 'Not a child of this class' if ! $child_removed;
+
+    $self->{ 'children' } = \@children;
+
+    return $self;
+}
+
 =method add_child( $child )
 
 Adds $child as a child of this instance.
 
-Croaks is the relationship between $child and $self is not valid.
+Croaks if the relationship between $child and $self is not valid.
 
 =cut
 
