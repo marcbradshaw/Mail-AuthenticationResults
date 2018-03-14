@@ -59,6 +59,11 @@ sub test_key_dies {
     dies_ok( sub{ $class->set_key( "with\nnewline" ) }, ( ref $class ) . ' set invalid newline key' );
     dies_ok( sub{ $class->set_key( "with\rreturn" ) }, ( ref $class ) . ' set invalid return key' );
 
+    delete $class->{ 'value' };
+    lives_ok( sub{ $class->set_key( 'none' ) }, ( ref $class ) . ' set key none' );
+    is( $class->as_string(), 'none', ( ref $class ) . ' stringifies none correctly' );
+    $class->set_value( 'test' );
+
     lives_ok( sub{ $class->set_key( 'test key!' ) }, ( ref $class ) . ' set key spaces' );
     is( $class->as_string(), '"test key!"=test', ( ref $class ) . ' stringifies spaces correctly' );
     lives_ok( sub{ $class->set_key( 'test;' ) }, ( ref $class ) . ' set key semicolon' );
