@@ -375,6 +375,12 @@ sub as_string {
     if ( $self->value() ) {
         $string .= '=' . $self->stringify( $self->value() );
     }
+    elsif ( defined $self->value() && $self->value() eq q{} ) {
+        $string .= '=""';
+    }
+    elsif ( defined $self->value() && $self->value() eq '0' ) {
+        $string .= '=0';
+    }
     else {
         # We special case none here
         if ( $self->key() ne 'none' ) {
