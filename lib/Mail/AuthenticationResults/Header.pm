@@ -129,6 +129,60 @@ sub eol {
     return $self->{ 'eol' };
 }
 
+=method fold_at()
+
+Return the current fold at value if set
+
+Strings will be folded if longer than this value where possible.
+
+=cut
+
+sub fold_at {
+    my ( $self ) = @_;
+    return $self->{ 'fold_at' };
+}
+
+=method set_fold_at( $fold_at )
+
+set the current fold_at value for as_string
+
+Strings will be folded if longer than this value where possible.
+
+=cut
+
+sub set_fold_at {
+    my ( $self, $fold_at ) = @_;
+    $self->{ 'fold_at' } = $fold_at;
+    return $self;
+}
+
+=method force_fold_at()
+
+Return the current force fold at value if set
+
+Strings WILL be folded if longer than this value.
+
+=cut
+
+sub force_fold_at {
+    my ( $self ) = @_;
+    return $self->{ 'force_fold_at' };
+}
+
+=method set_force_fold_at( $fold_at )
+
+set the current force_fold_at value for as_string
+
+Strings WILL be folded if longer than this value.
+
+=cut
+
+sub set_force_fold_at {
+    my ( $self, $fold_at ) = @_;
+    $self->{ 'force_fold_at' } = $fold_at;
+    return $self;
+}
+
 =method set_indent_style( $style )
 
 Set the as_string indenting style
