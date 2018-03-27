@@ -20,10 +20,21 @@ sub is {
     return 'space';
 }
 
+sub new {
+    my ($self) = @_;
+    croak 'Space tokens are not used in parsing';
+}
+
 sub parse {
     my ($self) = @_;
     croak 'Space tokens are not used in parsing';
 }
+
+sub remainder {
+    my ($self) = @_;
+    croak 'Space tokens are not used in parsing';
+}
+
 
 1;
 

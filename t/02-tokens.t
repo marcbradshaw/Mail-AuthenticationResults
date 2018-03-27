@@ -13,6 +13,7 @@ use Mail::AuthenticationResults::Token::Comment;
 use Mail::AuthenticationResults::Token::QuotedString;
 use Mail::AuthenticationResults::Token::Separator;
 use Mail::AuthenticationResults::Token::String;
+use Mail::AuthenticationResults::Token::Space;
 
 my $token;
 
@@ -71,6 +72,13 @@ dies_ok( sub{ $token = Mail::AuthenticationResults::Token::String->new( "\t Tab 
 dies_ok( sub{ $token = Mail::AuthenticationResults::Token::String->new( '"Quoted test' ); }, 'String token quoted dies' );
 dies_ok( sub{ $token = Mail::AuthenticationResults::Token::String->new( '(Comment test' ); }, 'String token comment dies' );
 dies_ok( sub{ $token = Mail::AuthenticationResults::Token::String->new( ';Separator test' ); }, 'String token separator dies' );
+
+# Space Token
+
+dies_ok( sub{ $token = Mail::AuthenticationResults::Token::Space->new( 'Space test' ); }, 'Space token dies' );
+lives_ok( sub{ $token = Mail::AuthenticationResults::Token::Space->new_from_value( ' ' ); }, 'Space token lives' );
+is( $token->value(), ' ', 'value correct' );
+dies_ok( sub{ $token->remainder(); }, 'Remainder dies' );
 
 done_testing();
 
