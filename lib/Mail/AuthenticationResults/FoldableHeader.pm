@@ -270,7 +270,6 @@ sub as_string {
     my $fold_length = 0;
     SECTION:
     while ( my $section = shift @$sections ) {
-
         if ( $section->[0]->is() eq 'space' && $section->[0]->value() eq $eol ) {
             # This section starts a new line
             $fold_length = 0;
@@ -286,7 +285,7 @@ sub as_string {
         my $section_length = length( $section_string );
 
         if ( $fold_length + $section_length > $self->try_fold_at() ) {
-            if ( $fold_length > 0 ) {
+if ( $fold_length > 0 ) {
                 # Remove whitespace tokens at beginning of section
                 while ( $section->[0]->is() eq 'space' ) {
                     shift @$section;
@@ -299,12 +298,37 @@ sub as_string {
                 next SECTION;
             }
             else {
-                # ToDo:
+            # ToDo:
                 # This section alone is over the line limit
                 # It already starts with a fold, so we need to remove
                 # some of it to a new line if we can.
 
                 # Strategy 1: Fold at a relevant token boundary
+                my $first_section = [];
+                my $second_section = [];
+                push @$second_section, Mail::AuthenticationResults::Token::Space->new_from_value( $eol );
+                push @$second_section, Mail::AuthenticationResults::Token::Space->new_from_value( $indent . $sub_indent );
+                my $first_section_length = 0;
+                foreach my $part ( @$section ) {
+                    my $part_length = length $part->value();
+                    if ( $part_length + $first_section_length < $self->try_fold_at() ) {
+                        push @$first_section, $part;
+                        $first_section_length += $part_length;
+                    }
+                    else {
+                        push @$second_section, $part;
+                        $first_section_length = $self->try_fold_at() + 1; # everything from this point goes onto second
+                    }
+                }
+                # Do we have a first and second section with actual content?
+                if ( ( grep { $_->is() ne 'space' } @$first_section ) &&
+                     ( grep { $_->is() ne 'space' } @$second_section ) ) {
+                    $first_section->[0]->{ '_folded' } = 1;
+                    $second_section->[0]->{ '_folded' } = 1;
+                    unshift @$sections, $second_section;
+                    unshift @$sections, $first_section;
+                    next SECTION;
+                }
 
                 # We MUST fold at $self->force_fold_at();
                 # Strategy 2: Force fold at a space within a string

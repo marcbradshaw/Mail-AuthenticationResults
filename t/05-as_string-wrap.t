@@ -29,10 +29,32 @@ subtest 'Set folding' => sub{
     is( $Parsed->force_fold_at(), 800, 'Force fld at has been set' );
 };
 
+subtest 'Extra Short folding' => sub{
+    my $Parser = Mail::AuthenticationResults::Parser->new( $InputARHeader );
+    my $Parsed = $Parser->parsed();
+    $Parsed->set_fold_at( 18 );
+    $Parsed->set_indent_style( 'entry' );
+    my $OutputARHeader = 'test.example.com;
+    foo=bar
+      string1=
+      string
+      string2=
+      string
+      string3=
+      string
+      string4=
+      string
+      string5=
+      string
+      string6=
+      string';
+    is( $Parsed->as_string(), $OutputARHeader, 'stringifies ok' );
+};
+
 subtest 'Short folding' => sub{
     my $Parser = Mail::AuthenticationResults::Parser->new( $InputARHeader );
     my $Parsed = $Parser->parsed();
-    $Parsed->set_fold_at( 5 );
+    $Parsed->set_fold_at( 21 );
     $Parsed->set_indent_style( 'entry' );
     my $OutputARHeader = 'test.example.com;
     foo=bar
