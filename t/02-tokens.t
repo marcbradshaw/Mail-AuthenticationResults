@@ -85,6 +85,7 @@ subtest 'space' => sub{
     dies_ok( sub{ $token = Mail::AuthenticationResults::Token::Space->new( 'Space test' ); }, 'Space token dies' );
     lives_ok( sub{ $token = Mail::AuthenticationResults::Token::Space->new_from_value( ' ' ); }, 'Space token lives' );
     is( $token->value(), ' ', 'value correct' );
+    dies_ok( sub{ $token->parse(); }, 'Parse dies' );
     dies_ok( sub{ $token->remainder(); }, 'Remainder dies' );
 };
 
