@@ -308,6 +308,7 @@ if ( $fold_length > 0 ) {
                 my $second_section = [];
                 push @$second_section, Mail::AuthenticationResults::Token::Space->new_from_value( $eol );
                 push @$second_section, Mail::AuthenticationResults::Token::Space->new_from_value( $indent . $sub_indent );
+                $second_section->[0]->{ '_folded' } = 1;
                 my $first_section_length = 0;
                 foreach my $part ( @$section ) {
                     my $part_length = length $part->value();
@@ -323,8 +324,6 @@ if ( $fold_length > 0 ) {
                 # Do we have a first and second section with actual content?
                 if ( ( grep { $_->is() ne 'space' } @$first_section ) &&
                      ( grep { $_->is() ne 'space' } @$second_section ) ) {
-                    $first_section->[0]->{ '_folded' } = 1;
-                    $second_section->[0]->{ '_folded' } = 1;
                     unshift @$sections, $second_section;
                     unshift @$sections, $first_section;
                     next SECTION;
