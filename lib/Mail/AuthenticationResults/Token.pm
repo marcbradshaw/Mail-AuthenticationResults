@@ -37,6 +37,21 @@ sub new {
     return $self;
 }
 
+=method new_from_value( $value )
+
+Create a new token from the given value
+
+=cut
+
+sub new_from_value {
+    my ( $class, $value ) = @_;
+
+    my $self = { 'value' => $value };
+    bless $self, $class;
+
+    return $self;
+}
+
 =method value()
 
 Return the value of the current Token instance.

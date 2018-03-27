@@ -20,22 +20,21 @@ Please see L<Mail::AuthenticationResults::Header::Base>
 
 sub _HAS_VALUE{ return 1; }
 
-sub as_string {
-    my ( $self ) = @_;
+sub build_string {
+    my ( $self, $header ) = @_;
 
     if ( ! $self->value() ) {
-        return q{};
+        return;
     }
-
-    my $string = q{};
 
     if ( ref $self->parent() ne 'Mail::AuthenticationResults::Header::AuthServID' ) {
-        $string = '/ ';
+        $header->separator( '/' );
+        $header->space( ' ' );
     }
 
-    $string .= $self->value();
+    $header->string( $self->value() );
 
-    return $string;
+    return;
 }
 
 sub safe_set_value {

@@ -253,26 +253,44 @@ sub add_child {
 
 sub as_string {
     my ( $self ) = @_;
-    my $string = q{};
+    my $header = Mail::AuthenticationResults::FoldableHeader->new();
+    $header->set_try_fold_at( $self->fold_at() ) if defined $self->fold_at();
+    $header->set_force_fold_at( $self->force_fold_at() ) if defined $self->force_fold_at();
+    $header->set_eol( $self->eol() );
+    $header->set_indent( ' ' x $self->indent_by() );
+    $header->set_sub_indent( '  ' );
+    $self->build_string( $header );
+    return $header->as_string();
+}
+
+sub build_string {
+    my ( $self, $header ) = @_;
     my $value = q{};
     if ( $self->value() ) {
-        $value = $self->value()->as_string();
+        $self->value()->build_string( $header );
     }
     else {
-        $value = 'unknown';
+        $header->string( 'unknown' );
     }
-    $value .= ";";
+    $header->separator( ';' );
 
-    $value .= join( ";", map { $_->as_string_prefix() . $_->as_string() } @{ $self->children() } );
+    my $sep = 0;
+    foreach my $child ( @{ $self->children() } ) {
+        $header->separator( ';' ) if $sep;
+        $sep = 1;
+        $child->as_string_prefix( $header );
+        $child->build_string( $header );
+    }
 
     if ( scalar @{ $self->search({ 'isa' => 'entry' } )->children() } == 0 ) {
         #if ( scalar @{ $self->children() } > 0 ) {
         #    $value .= ' ';
         #}
-        $value .= ' none';
+        $header->space( ' ' );
+        $header->string ( 'none' );
     }
 
-    return $value;
+    return;
 }
 
 1;

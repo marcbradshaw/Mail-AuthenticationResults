@@ -36,10 +36,17 @@ sub _ALLOWED_CHILDREN {
     return 0;
 }
 
-sub as_string {
-    my ( $self ) = @_;
-    my $string = q{};
-    return join( ' ', $self->stringify( $self->value() ), map { $_->as_string() } @{ $self->children() } );
+sub build_string {
+    my ( $self, $header ) = @_;
+
+    $header->string( $self->stringify( $self->value() ) );
+    foreach my $child ( @{ $self->children() } ) {
+        $header->space( ' ' );
+        #$header->concat( $child->as_string_prefix() );
+        $child->build_string( $header );
+    }
+
+    return;
 }
 
 1;

@@ -76,10 +76,10 @@ sub set_value {
     return $self;
 }
 
-sub as_string {
-    my ( $self ) = @_;
-    my $string = '(' . $self->value() . ')';
-    return $string;
+sub build_string {
+    my ( $self, $header ) = @_;
+    $header->comment( '(' . $self->value() . ')' );
+    return;
 }
 
 1;

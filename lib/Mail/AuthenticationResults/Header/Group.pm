@@ -56,10 +56,18 @@ sub add_child {
     return $child;
 }
 
-sub as_string {
-    my ( $self ) = @_;
-    my $string = q{};
-    return join( ";\n", map { $_->as_string() } @{ $self->children() } );
+sub build_string {
+    my ( $self, $header ) = @_;
+
+    my $sep = 0;
+    foreach my $child ( @{ $self->children() } ) {
+        $header->separator( ';' ) if $sep;
+        $header->space( "\n" ) if $sep;
+        $sep = 1;
+        $child->build_string( $header );
+    }
+
+    return;
 }
 
 1;

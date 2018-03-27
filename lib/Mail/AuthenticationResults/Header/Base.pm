@@ -9,6 +9,7 @@ use Scalar::Util qw{ weaken refaddr };
 use Carp;
 
 use Mail::AuthenticationResults::Header::Group;
+use Mail::AuthenticationResults::FoldableHeader;
 
 =head1 DESCRIPTION
 
@@ -326,15 +327,15 @@ sub ancestor {
     return ( $eldest, $depth );
 }
 
-=method as_string_prefix()
+=method as_string_prefix( $header )
 
-Return the prefix to as_string for this object when calledas a child
+Add the prefix to as_string for this object when calledas a child
 of another objects as_string method call.
 
 =cut
 
 sub as_string_prefix {
-    my ( $self ) = @_;
+    my ( $self, $header ) = @_;
 
     my ( $eldest, $depth ) = $self->ancestor();
 
@@ -349,11 +350,15 @@ sub as_string_prefix {
     }
 
     my $indent = ' ';
+    my $added = 0;
     if ( $eldest->can( 'indent_on' ) ) {
         if ( $eldest->indent_on( ref $self ) ) {
-            $indent = $eol . ' ' x ( $indents * $depth );
+            $header->space( $eol );
+            $header->space( ' ' x ( $indents * $depth ) );
+            $added = 1;
         }
     }
+    $header->space( ' ' ) if ! $added;
 
     return $indent;
 }
@@ -366,32 +371,48 @@ Returns this instance as a string.
 
 sub as_string {
     my ( $self ) = @_;
+    my $header = Mail::AuthenticationResults::FoldableHeader->new();
+    $self->build_string( $header );
+    return $header->as_string();
+}
+
+=method build_string( $header )
+
+Build a string using the supplied Mail::AuthenticationResults::FoldableHeader object.
+
+=cut
+
+sub build_string {
+    my ( $self, $header ) = @_;
 
     if ( ! $self->key() ) {
-        return q{};
+        return;
     }
 
-    my $string = $self->stringify( $self->key() );
+    $header->string( $self->stringify( $self->key() ) );
     if ( $self->value() ) {
-        $string .= '=' . $self->stringify( $self->value() );
+        $header->assignment( '=' );
+        $header->string( $self->stringify( $self->value() ) );
     }
     elsif ( $self->value() eq '0' ) {
-        $string .= '=0';
+        $header->assignment( '=' );
+        $header->string( '0' );
     }
     elsif ( $self->value() eq q{} ) {
         # special case none here
         if ( $self->key() ne 'none' ) {
-            $string .= '=""';
+            $header->assignment( '=' );
+            $header->string( '""' );
         }
     }
     if ( $self->_HAS_CHILDREN() ) { # uncoverable branch false
         # There are no classes which run this code without having children
         foreach my $child ( @{$self->children()} ) {
-            $string .= $child->as_string_prefix();
-            $string .= $child->as_string();
+            $child->as_string_prefix( $header );
+            $child->build_string( $header );
         }
     }
-    return $string;
+    return;
 }
 
 =method search( $search )
