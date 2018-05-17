@@ -1,6 +1,7 @@
 Change log for Mail::AuthenticationResults
 
 {{$NEXT}}
+        - Consider CR properly when parsing an entry.
 
 1.20180328 2018-03-28 21:35:34+11:00 Australia/Melbourne
         - Folding of headers rendered as string for

@@ -78,6 +78,7 @@ sub tokenise {
     my @tokenised;
 
     $header =~ s/\n/ /g;
+    $header =~ s/\r/ /g;
     $header =~ s/^\s+//;
 
     # Remove Header part if present
