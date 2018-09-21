@@ -490,14 +490,14 @@ sub search {
         }
     }
 
-    if ( exists( $search->{ 'authserv-id' } ) ) {
+    if ( exists( $search->{ 'authserv_id' } ) ) {
         if ( $self->_HAS_VALUE() ) {
             if ( lc ref $self eq 'mail::authenticationresults::header' ) {
                 my $authserv_id = eval{ $self->value()->value() } || q{};
-                if ( ref $search->{ 'authserv-id' } eq 'Regexp' && $authserv_id =~ m/$search->{'authserv-id'}/ ) {
+                if ( ref $search->{ 'authserv_id' } eq 'Regexp' && $authserv_id =~ m/$search->{'authserv_id'}/ ) {
                     $match = $match && 1;
                 }
-                elsif ( lc $search->{ 'authserv-id' } eq lc $authserv_id ) {
+                elsif ( lc $search->{ 'authserv_id' } eq lc $authserv_id ) {
                     $match = $match && 1;
                 }
                 else {
