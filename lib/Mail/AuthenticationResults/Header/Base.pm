@@ -437,6 +437,11 @@ Match if the instance value matches the supplied value (string or regex)
 Match is the instance class typs matches the supplied value. This is a lowercase version
 of the class type, (comment,entry,subentry,etc))
 
+=item has
+
+An arrayref of searches, match this class if the supplied search queries would return at
+least 1 result each
+
 =back
 
 =cut
@@ -491,6 +496,12 @@ sub search {
         }
         else {
             $match = 0;
+        }
+    }
+
+    if ( exists( $search->{ 'has' } ) ) {
+        foreach my $query ( @{ $search->{ 'has' } } ) {
+            $match = 0 if ( scalar @{ $self->search( $query )->children() } == 0 );
         }
     }
 
