@@ -494,6 +494,9 @@ sub search {
         if ( lc ref $self eq 'mail::authenticationresults::header::' . lc $search->{ 'isa' } ) {
             $match = $match && 1;
         }
+        elsif ( lc ref $self eq 'mail::authenticationresults::header' && lc $search->{ 'isa' } eq 'header' ) {
+            $match = $match && 1;
+        }
         else {
             $match = 0;
         }
