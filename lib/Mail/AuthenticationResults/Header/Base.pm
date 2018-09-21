@@ -490,6 +490,30 @@ sub search {
         }
     }
 
+    if ( exists( $search->{ 'authserv-id' } ) ) {
+        if ( $self->_HAS_VALUE() ) {
+            if ( lc ref $self eq 'mail::authenticationresults::header' ) {
+                my $authserv_id = eval{ $self->value()->value() } || q{};
+                if ( ref $search->{ 'authserv-id' } eq 'Regexp' && $authserv_id =~ m/$search->{'authserv-id'}/ ) {
+                    $match = $match && 1;
+                }
+                elsif ( lc $search->{ 'authserv-id' } eq lc $authserv_id ) {
+                    $match = $match && 1;
+                }
+                else {
+                    $match = 0;
+                }
+            }
+            else {
+                $match = 0;
+            }
+        }
+        else {
+            $match = 0; # uncoverable statement
+            # There are no code paths with the current classes which end up here
+        }
+    }
+
     if ( exists( $search->{ 'isa' } ) ) {
         if ( lc ref $self eq 'mail::authenticationresults::header::' . lc $search->{ 'isa' } ) {
             $match = $match && 1;

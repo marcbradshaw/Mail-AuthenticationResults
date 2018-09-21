@@ -5,6 +5,8 @@ Change log for Mail::AuthenticationResults
           for results whose children match a given search.
         - Add a header 'isa' type to search for top level
           header entries within a group.
+        - Add an 'authserv-id' search type to search for
+          headers from a given authserv-id within a group.
 
 1.20180518 2018-05-18 10:10:03+10:00 Australia/Melbourne
         - Consider CR properly when parsing an entry.
