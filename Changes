@@ -1,7 +1,6 @@
 Change log for Mail::AuthenticationResults
 
 {{$NEXT}}
-        - Added a SpamAssassin plugin for parsing headers.
 
 1.20180923 2018-09-23 13:39:01+10:00 Australia/Melbourne
         - Added a 'has' search property to allow searching
