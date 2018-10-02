@@ -251,6 +251,22 @@ sub add_child {
     return $self->SUPER::add_child( $child );
 }
 
+sub _as_hashref {
+    my ( $self ) = @_;
+
+    my $type = lc ref $self;
+    $type =~ s/^(.*::)//;
+    my $hashref = { 'type' => $type };
+
+    $hashref->{'key'} = $self->key() if $self->_HAS_KEY();
+    $hashref->{'authserv_id'} = $self->value()->_as_hashref() if $self->value();
+    if ( $self->_HAS_CHILDREN() ) {
+        my @children = map { $_->_as_hashref() } @{ $self->children() };
+        $hashref->{'children'} = \@children;
+    }
+    return $hashref;
+}
+
 sub as_string {
     my ( $self ) = @_;
     my $header = Mail::AuthenticationResults::FoldableHeader->new();

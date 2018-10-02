@@ -6,6 +6,7 @@ use strict;
 use warnings;
 # VERSION
 use Scalar::Util qw{ weaken refaddr };
+use JSON;
 use Carp;
 
 use Mail::AuthenticationResults::Header::Group;
@@ -361,6 +362,35 @@ sub as_string_prefix {
     $header->space( ' ' ) if ! $added;
 
     return $indent;
+}
+
+sub _as_hashref {
+    my ( $self ) = @_;
+
+    my $type = lc ref $self;
+    $type =~ s/^(.*::)//;
+    my $hashref = { 'type' => $type };
+
+    $hashref->{'key'} = $self->key() if $self->_HAS_KEY();
+    $hashref->{'value'} = $self->value() if $self->_HAS_VALUE();
+    if ( $self->_HAS_CHILDREN() ) {
+        my @children = map { $_->_as_hashref() } @{ $self->children() };
+        $hashref->{'children'} = \@children;
+    }
+    return $hashref;
+}
+
+=method as_json()
+
+Return this instance as a JSON serialised string
+
+=cut
+
+sub as_json {
+    my ( $self ) = @_;
+    my $J = JSON->new();
+    $J->canonical();
+    return $J->encode( $self->_as_hashref() );
 }
 
 =method as_string()
