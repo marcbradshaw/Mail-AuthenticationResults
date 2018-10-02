@@ -15,13 +15,13 @@ perl:
 before_install:
 
 install:
-   - cpanm --quiet --notest Scalar::Util
+   - dzil authordeps --missing | cpanm --quiet --notest
+   - dzil listdeps --missing | cpanm --quiet --notest
 
 script:
    - HARNESS_IS_VERBOSE=1 prove -v -Ilib t
 
 after_success:
-  - dzil listdeps | cpanm
   - cpanm -n Devel::Cover::Report::Coveralls
   - cover -test -make 'prove -Ilib t' -report coveralls
 
