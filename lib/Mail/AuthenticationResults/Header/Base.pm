@@ -48,28 +48,28 @@ L<Mail::AuthenticationResults::Header::Version> represents a version part
 
 =back
 
-Header
-    AuthServID
-        Version
-        Comment
-        SubEntry
-    Entry
-        Comment
-    Entry
-        Comment
+    Header
+        AuthServID
+            Version
+            Comment
+            SubEntry
+        Entry
+            Comment
+        Entry
+            Comment
+            SubEntry
+                Comment
+        Entry
+            SubEntry
+            SubEntry
+
+    Group
+        Entry
+            Comment
         SubEntry
             Comment
-    Entry
-        SubEntry
-        SubEntry
-
-Group
-    Entry
-        Comment
-    SubEntry
-        Comment
-    Entry
-        SubEntry
+        Entry
+            SubEntry
 
 =cut
 
