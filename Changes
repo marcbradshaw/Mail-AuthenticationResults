@@ -1,6 +1,8 @@
 Change log for Mail::AuthenticationResults
 
 {{$NEXT}}
+
+1.20200108 2020-01-08 03:38:09+00:00 UTC
         - Added as_json method to return structured JSON
           version of an instance.
         - Properly parse strings beginning with a .
