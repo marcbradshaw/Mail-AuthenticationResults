@@ -92,6 +92,8 @@ sub tokenise {
         my $token;
         $header =~ s/^\s+//;
 
+        my $last_non_comment_type = exists( $args->{ 'last_non_comment_type' } ) ? $args->{ 'last_non_comment_type' }->is() : 'none';
+
         if ( length( $header ) == 0 ) {
             last;
         }
@@ -106,8 +108,13 @@ sub tokenise {
             $token = Mail::AuthenticationResults::Token::QuotedString->new( $header, $args );
             $args->{ 'last_non_comment_type' } = $token;
         }
-        elsif ( $header =~ /^\./ ) {
+        elsif ( $last_non_comment_type ne 'assignment' && $header =~ /^\./ ) {
             $token = Mail::AuthenticationResults::Token::Assignment->new( $header, $args );
+            $args->{ 'last_non_comment_type' } = $token;
+        }
+        elsif ( $last_non_comment_type eq 'assignment' && $header =~ /^\./ ) {
+            # a . after an assignment cannot be another assignment, likely an unquoted string.
+            $token = Mail::AuthenticationResults::Token::String->new( $header, $args );
             $args->{ 'last_non_comment_type' } = $token;
         }
         elsif ( $header =~ /^\// ) {
