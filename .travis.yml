@@ -17,6 +17,7 @@ before_install:
 install:
    - dzil authordeps --missing | cpanm --quiet --notest
    - dzil listdeps --missing | cpanm --quiet --notest
+   - cpanm --quiet --notest Test::Exception
 
 script:
    - HARNESS_IS_VERBOSE=1 prove -v -Ilib t
