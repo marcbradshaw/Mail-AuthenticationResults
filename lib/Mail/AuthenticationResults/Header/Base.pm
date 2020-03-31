@@ -503,6 +503,7 @@ sub search {
     }
 
     if ( exists( $search->{ 'value' } ) ) {
+        $search->{ 'value' } = '' if ! defined $search->{ 'value' };
         if ( $self->_HAS_VALUE() ) {
             if ( ref $search->{ 'value' } eq 'Regexp' && $self->value() =~ m/$search->{'value'}/ ) {
                 $match = $match && 1;
