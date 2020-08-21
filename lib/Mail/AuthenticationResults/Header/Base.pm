@@ -16,36 +16,60 @@ use Mail::AuthenticationResults::FoldableHeader;
 
 Set of classes representing the various parts and sub parts of Authentication Results Headers.
 
+=over
+
+=item *
+
 L<Mail::AuthenticationResults::Header> represents a complete Authentication Results Header set
+
+=item * 
+
 L<Mail::AuthenticationResults::Header::AuthServID> represents the AuthServID part of the set
+
+=item * 
+
 L<Mail::AuthenticationResults::Header::Comment> represents a comment
+
+=item * 
+
 L<Mail::AuthenticationResults::Header::Entry> represents a main entry
+
+=item * 
+
 L<Mail::AuthenticationResults::Header::Group> represents a group of parts, typically as a search result
+
+=item * 
+
 L<Mail::AuthenticationResults::Header::SubEntry> represents a sub entry part
+
+=item * 
+
 L<Mail::AuthenticationResults::Header::Version> represents a version part
 
-Header
-    AuthServID
-        Version
-        Comment
-        SubEntry
-    Entry
-        Comment
-    Entry
-        Comment
+=back
+
+    Header
+        AuthServID
+            Version
+            Comment
+            SubEntry
+        Entry
+            Comment
+        Entry
+            Comment
+            SubEntry
+                Comment
+        Entry
+            SubEntry
+            SubEntry
+
+    Group
+        Entry
+            Comment
         SubEntry
             Comment
-    Entry
-        SubEntry
-        SubEntry
-
-Group
-    Entry
-        Comment
-    SubEntry
-        Comment
-    Entry
-        SubEntry
+        Entry
+            SubEntry
 
 =cut
 
