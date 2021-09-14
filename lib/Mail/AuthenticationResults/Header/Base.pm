@@ -8,6 +8,7 @@ use warnings;
 use Scalar::Util qw{ weaken refaddr };
 use JSON;
 use Carp;
+use Clone qw{ clone };
 
 use Mail::AuthenticationResults::Header::Group;
 use Mail::AuthenticationResults::FoldableHeader;
@@ -241,6 +242,22 @@ sub orphan {
     croak 'Child does not have a parent' if ! exists $self->{ 'parent' };
     delete $self->{ 'parent' };
     return;
+}
+
+=method copy_children_from( $object )
+
+Copy (clone) all of the children from the given object
+into this object.
+
+=cut
+
+sub copy_children_from {
+  my ( $self, $object ) = @_;
+  for my $original_entry ($object->children()->@*) {
+    my $entry = clone $original_entry;
+    $entry->orphan if exists $entry->{ 'parent' };;
+    $self->add_child( $entry );
+  }
 }
 
 =method add_parent( $parent )
