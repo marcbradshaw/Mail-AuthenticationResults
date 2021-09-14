@@ -21,8 +21,6 @@ key/value pairs are parsed when present in the authserv-id section, this is agai
 
 Comments added between key/value pairs will be added after them in the data structures and when stringified.
 
-It is a work in progress..
-
 =head1 BUGS
 
 Please report bugs via the github tracker.
