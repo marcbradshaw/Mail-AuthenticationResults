@@ -253,7 +253,7 @@ into this object.
 
 sub copy_children_from {
   my ( $self, $object ) = @_;
-  for my $original_entry ($object->children()->@*) {
+  for my $original_entry (@{$object->children()}) {
     my $entry = clone $original_entry;
     $entry->orphan if exists $entry->{ 'parent' };;
     $self->add_child( $entry );
