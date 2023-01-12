@@ -1,6 +1,8 @@
 Change log for Mail::AuthenticationResults
 
 {{$NEXT}}
+
+2.20230112 2023-01-12 22:49:04+00:00 UTC
   - Add parser method to parse json serialized object back
     into the object(s) it represents
 
