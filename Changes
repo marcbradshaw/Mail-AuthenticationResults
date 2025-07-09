@@ -1,6 +1,7 @@
 Change log for Mail::AuthenticationResults
 
 {{$NEXT}}
+  - Correctly parse a string beginning with a slash
 
 2.20231031 2023-10-31 23:57:33+00:00 UTC
   - Option to set more strict quoting of string
