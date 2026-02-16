@@ -13,6 +13,11 @@ use Clone qw{ clone };
 use Mail::AuthenticationResults::Header::Group;
 use Mail::AuthenticationResults::FoldableHeader;
 
+use Mail::AuthenticationResults::Header::Entry;
+use Mail::AuthenticationResults::Header::SubEntry;
+use Mail::AuthenticationResults::Header::Comment;
+
+
 =head1 DESCRIPTION
 
 Set of classes representing the various parts and sub parts of Authentication Results Headers.
@@ -347,6 +352,54 @@ sub add_child {
     $child->add_parent( $self );
     push @{ $self->{ 'children' } }, $child;
 
+    return $child;
+}
+
+=method add_entry ($key, $value)
+
+Creates a new entry with the given key and value, and then adds
+that as a child.
+
+Returns the child added.
+
+=cut
+
+sub add_entry {
+    my ($self, $key, $value) = @_;
+    my $child = Mail::AuthenticationResults::Header::Entry->new->set_key($key)->safe_set_value($value);
+    $self->add_child($child);
+    return $child;
+}
+
+=method add_sub_entry ($self, $key, $value)
+
+Creates a new sub entry with the given key and value, and then adds
+that as a child.
+
+Returns the child added.
+
+=cut
+
+sub add_sub_entry {
+    my ($self, $key, $value) = @_;
+    my $child = Mail::AuthenticationResults::Header::SubEntry->new->set_key($key)->safe_set_value($value);
+    $self->add_child($child);
+    return $child;
+}
+
+=method add_comment ($key, $value)
+
+Creates a new comment with the given key and value, and then adds
+that as a child.
+
+Returns the child added.
+
+=cut
+
+sub add_comment {
+    my ($self, $value) = @_;
+    my $child = Mail::AuthenticationResults::Header::Comment->new->safe_set_value($value);
+    $self->add_child($child);
     return $child;
 }
 
